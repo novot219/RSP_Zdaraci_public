@@ -1,18 +1,45 @@
 Žďáráci – Recenzní systém vědeckého časopisu
+Popis projektu
 
-Cílem projektu je vytvořit webovou aplikaci pro správu odborného časopisu – sběr článků, recenzní řízení a publikování. Projekt vzniká v rámci předmětu Řízení softwarových projektů a je vyvíjen agilní metodikou Scrum.
+Cílem projektu je vytvořit webovou aplikaci pro správu odborného časopisu – od sběru článků přes recenzní řízení až po jejich publikování.
+Projekt vzniká v rámci předmětu Řízení softwarových projektů a je vyvíjen agilní metodikou Scrum.
 
-Uživatelské role: autor, recenzent, redaktor, šéfredaktor, čtenář, administrátor.
+Hlavní uživatelské role
 
-Použité nástroje: ScrumDesk, MS Teams, Git/GitHub.
+Autor – nahrává a spravuje své články
 
-Struktura repozitáře:
-/src – zdrojové soubory
-/docs – dokumentace
-README.md – popis projektu
+Recenzent – posuzuje a hodnotí články
 
-Tým Žďáráci:
+Redaktor – zajišťuje úpravy a komunikaci s autory
+
+Šéfredaktor – rozhoduje o publikování článků
+
+Čtenář – prohlíží publikované články
+
+Administrátor – spravuje uživatele a systém
+
+Použité nástroje
+
+ScrumDesk – řízení vývojového cyklu a sprintů
+
+MS Teams – týmová komunikace a stand-up meetingy
+
+Git / GitHub – verzování a správa repozitáře
+
+Struktura repozitáře
+/src        – zdrojové soubory aplikace
+/docs       – dokumentace projektu
+README.md   – popis projektu
+.gitignore  – konfigurace ignorovaných souborů
+CONTRIBUTING.md – pravidla pro přispívání
+pull_request_template.md – šablona pro pull requesty
+
+Tým Žďáráci
+
 Martin Novotný – Scrum Master
+
 Matyáš Kulhánek – Product Owner
+
 Tomáš Houf – Team Member
+
 Miloslav Bratršovský – Team Member

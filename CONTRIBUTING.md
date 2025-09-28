@@ -1,26 +1,34 @@
 Contributing Guidelines
 
-Thank you for contributing to this project!
-Before you start, please follow these steps:
+Děkujeme za váš zájem přispět do tohoto projektu!
+Než začnete pracovat na změnách, prosím dodržujte následující pravidla:
 
-Branch Workflow
+Branch workflow
 
-All changes must be made in a new branch created from main.
+Všechny změny provádějte v nové větvi vytvořené z dev (ne z main).
 
-Branch naming convention: feature/<short-description> or fix/<short-description>.
+Název větve:
 
-Pull Requests
+feature/<krátký-popis> – pro nové funkce
 
-Always open a pull request to merge your branch into main.
+fix/<krátký-popis> – pro opravy chyb
 
-At least 1 reviewer must approve your pull request.
+Pull requesty
 
-Ensure your code passes all checks before submitting.
+Vždy otevřete pull request z dev větve.
 
-Code Guidelines
+Pull request musí schválit alespoň jeden reviewer.
 
-Write clear commit messages.
+Před mergováním musí projít všechny kontroly a testy.
 
-Keep pull requests small and focused.
+Commity
 
-Follow existing code style and structure.
+Pište srozumitelné a stručné commit zprávy.
+
+Každý commit by měl být malý a zaměřený na jednu změnu.
+
+Styl kódu
+
+Dodržujte jednotný styl a strukturu kódu projektu.
+
+Odstraňujte nepotřebné soubory a změny.
