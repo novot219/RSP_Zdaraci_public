@@ -15,31 +15,35 @@
   <main class="container">
     <section class="card">
       <h2>Podání článku</h2>
-      <form id="uploadForm">
-        <div class="grid">
-          <label>
-            Název článku
-            <input type="text" id="title" placeholder="Např. Analýza X" required />
-          </label>
-          <label>
-            Autor (jméno)
-            <input type="text" id="author" placeholder="Jméno Příjmení" required />
-          </label>
-          <label>
-            Kontakt (e-mail)
-            <input type="email" id="email" placeholder="autor@example.com" required />
-          </label>
-          <label>
-            Soubor (PDF nebo DOCX)
-            <input type="file" id="file" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" required />
-          </label>
-        </div>
-        <div class="actions">
-          <button type="submit">Nahrát</button>
-          <span id="hint" class="muted">Max. 15 MB, povoleno: PDF, DOCX.</span>
-        </div>
-        <p id="msg" role="status" aria-live="polite"></p>
-      </form>
+      <form id="uploadForm" novalidate>
+  <div class="grid">
+    <label>
+      Název článku
+      <input type="text" id="title" placeholder="Např. Analýza X" required />
+      <small class="error" id="err-title"></small>
+    </label>
+    <label>
+      Autor (jméno)
+      <input type="text" id="author" placeholder="Jméno Příjmení" required />
+      <small class="error" id="err-author"></small>
+    </label>
+    <label>
+      Kontakt (e-mail)
+      <input type="email" id="email" placeholder="autor@example.com" required />
+      <small class="error" id="err-email"></small>
+    </label>
+    <label>
+      Soubor (PDF nebo DOCX)
+      <input type="file" id="file" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" required />
+      <small class="error" id="err-file"></small>
+    </label>
+  </div>
+  <div class="actions">
+    <button type="submit" id="submitBtn">Nahrát</button>
+    <span id="hint" class="muted">Max. 15 MB, povoleno: PDF, DOCX.</span>
+  </div>
+  <p id="msg" role="status" aria-live="polite"></p>
+</form>
     </section>
 
     <section class="card">

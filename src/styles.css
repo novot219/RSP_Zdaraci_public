@@ -43,6 +43,16 @@ button.danger { background: var(--danger); color: white; }
 .badge.ok { background: rgba(77, 255, 161, .12); border-color: rgba(77,255,161,.35); color: #a7f3d0; }
 .badge.pending { background: rgba(79,124,255,.12); border-color: rgba(79,124,255,.35); color: #c7d2fe; }
 
+.error {
+  color: #ef4444;
+  min-height: 18px;
+  font-size: 0.85rem;
+  margin-top: 2px;
+}
+input.is-invalid {
+  border-color: #ef4444;
+}
+
 @media (max-width: 720px) {
   .grid { grid-template-columns: 1fr; }
   .table { font-size: 0.9rem; }
