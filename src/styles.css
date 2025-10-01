@@ -1,0 +1,49 @@
+:root {
+  --bg: #0b0c10;
+  --card: #12131a;
+  --text: #e7e9ee;
+  --muted: #99a1b3;
+  --accent: #4f7cff;
+  --accent-2: #2dd4bf;
+  --danger: #ef4444;
+  --border: #1e2130;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font: 16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+
+.container { width: min(1100px, 92%); margin: 24px auto; }
+h1, h2 { margin: 0 0 12px; }
+.muted { color: var(--muted); }
+.small { font-size: 0.9rem; }
+
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 18px; margin-bottom: 20px; }
+
+.grid { display: grid; grid-template-columns: repeat(2, minmax(220px, 1fr)); gap: 14px; }
+label { display: flex; flex-direction: column; gap: 8px; font-weight: 600; }
+input[type="text"], input[type="email"], input[type="file"] {
+  background: #0e0f15; border: 1px solid var(--border); color: var(--text);
+  padding: 10px 12px; border-radius: 10px;
+}
+input::file-selector-button {
+  background: var(--accent); color: white; border: none; border-radius: 8px; padding: 8px 12px; margin-right: 10px; cursor: pointer;
+}
+
+.actions { display: flex; align-items: center; gap: 12px; margin-top: 8px; }
+button {
+  background: var(--accent-2); color: #071013; border: none; border-radius: 10px; padding: 10px 14px; font-weight: 700; cursor: pointer;
+}
+button:hover { filter: brightness(1.05); }
+button.danger { background: var(--danger); color: white; }
+
+.table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+.table th, .table td { border-bottom: 1px solid var(--border); padding: 10px 8px; text-align: left; }
+.table th { color: var(--muted); font-weight: 600; }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--border); }
+.badge.ok { background: rgba(77, 255, 161, .12); border-color: rgba(77,255,161,.35); color: #a7f3d0; }
+.badge.pending { background: rgba(79,124,255,.12); border-color: rgba(79,124,255,.35); color: #c7d2fe; }
+
+@media (max-width: 720px) {
+  .grid { grid-template-columns: 1fr; }
+  .table { font-size: 0.9rem; }
+}
