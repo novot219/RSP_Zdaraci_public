@@ -14,7 +14,35 @@ async function init() {
   await refreshTable();
 }
 
+function normStatus(s) {
+  const map = {
+    'podáno': 'Podáno',
+    'podano': 'Podáno',
+    'v recenzi': 'V recenzi',
+    'prijato': 'Přijato',
+    'přijato': 'Přijato',
+    'zamítnuto': 'Zamítnuto',
+    'zamitnuto': 'Zamítnuto',
+    'publikováno': 'Publikováno',
+    'publikovano': 'Publikováno'
+  };
+  const k = String(s || '').toLowerCase().trim();
+  return map[k] || 'Podáno';
+}
 
+function statusClass(s) {
+  const v = normStatus(s);
+  if (v === 'V recenzi') return 'status status--review';
+  if (v === 'Přijato') return 'status status--accepted';
+  if (v === 'Zamítnuto') return 'status status--rejected';
+  if (v === 'Publikováno') return 'status status--published';
+  return 'status status--submitted';
+}
+
+function renderStatus(s) {
+  const v = normStatus(s);
+  return `<span class="${statusClass(v)}"><i></i>${v}</span>`;
+}
 
 function bindUploadUI() {
   const form = byId('uploadForm');
@@ -103,7 +131,7 @@ function renderStatusResult(record, query) {
   out.innerHTML = `
     <p><strong>Název:</strong> ${escapeHtml(record.title)}</p>
     <p><strong>Soubor:</strong> ${escapeHtml(record.filename)} (${humanSize(record.size)})</p>
-    <p><strong>Aktuální stav:</strong> <span class="badge ok">${record.status}</span></p>
+    <p><strong>Aktuální stav:</strong> ${renderStatus(record.status)}</p>
     <p><strong>Přidáno:</strong> ${new Date(record.addedAt).toLocaleString('cs-CZ')}</p>
   `;
 
@@ -139,7 +167,7 @@ async function refreshTable() {
       <td>${escapeHtml(it.author)}</td>
       <td>${escapeHtml(it.filename)}</td>
       <td>${humanSize(it.size)}</td>
-      <td><span class="badge ok">${it.status}</span></td>
+      <td>${renderStatus(it.status)}</td>
       <td>${new Date(it.addedAt).toLocaleString('cs-CZ')}</td>
       <td class="actions-cell"></td>
     `;
