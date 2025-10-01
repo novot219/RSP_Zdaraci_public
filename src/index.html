@@ -66,6 +66,30 @@
       </table>
       <p class="muted" id="emptyState">Zatím nic nepodáno.</p>
     </section>
+    <section class="card">
+  <h2>Zkontrolovat stav článku</h2>
+  <form id="statusForm" novalidate>
+    <div class="grid">
+      <label>
+        Kontakt (e-mail)
+        <input type="email" id="statusEmail" placeholder="autor@example.com" required />
+        <small class="error" id="err-status-email"></small>
+      </label>
+      <label>
+        Název souboru (vč. přípony)
+        <input type="text" id="statusFilename" placeholder="např. clanek.pdf" required />
+        <small class="error" id="err-status-filename"></small>
+      </label>
+    </div>
+    <div class="actions">
+      <button type="submit">Vyhledat stav</button>
+    </div>
+  </form>
+
+  <div id="statusResult" class="muted" style="margin-top:10px;"></div>
+
+  <div id="statusHistory" style="margin-top:12px;"></div>
+</section>
   </main>
 
   <footer class="container muted small">
