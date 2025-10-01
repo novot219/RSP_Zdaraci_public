@@ -4,6 +4,8 @@ const MAX_SIZE_BYTES = 15 * 1024 * 1024; // 15 MB
 const ALLOWED_EXT = ['pdf', 'docx'];
 const TITLE_MIN = 3, TITLE_MAX = 120;
 const AUTHOR_MIN = 3, AUTHOR_MAX = 60;
+let lastStatusQuery = null;
+let refreshTimer = null;
 
 init();
 
@@ -11,6 +13,9 @@ async function init() {
   await initDB();
   bindUploadUI();
   bindStatusUI();
+  bindRefreshUI();
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) refreshAll(); });
+  window.addEventListener('focus', refreshAll);
   await refreshTable();
 }
 
@@ -43,6 +48,8 @@ function renderStatus(s) {
   const v = normStatus(s);
   return `<span class="${statusClass(v)}"><i></i>${v}</span>`;
 }
+
+bindRefreshUI();
 
 function bindUploadUI() {
   const form = byId('uploadForm');
@@ -111,6 +118,7 @@ function bindStatusUI() {
     if (!email || !filename) return;
 
     const rec = await findArticleByEmailAndFilename(email, filename);
+    lastStatusQuery = { email, filename };
     renderStatusResult(rec, { email, filename });
   });
 }

@@ -82,6 +82,8 @@ input.is-invalid {
 .status--rejected i { background: #ef4444; }
 .status--published { background: rgba(45,212,191,.12); border-color: rgba(45,212,191,.35); color: #99f6e4; }
 .status--published i { background: #2dd4bf; }
+.toolbar { display: flex; align-items: center; gap: 12px; margin: 10px 0; }
+.toolbar input[type="checkbox"] { vertical-align: middle; }
 
 @media (max-width: 720px) {
   .grid { grid-template-columns: 1fr; }

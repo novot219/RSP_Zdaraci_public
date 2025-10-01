@@ -48,6 +48,10 @@
 
     <section class="card">
       <h2>Moje podané články</h2>
+      <div class="toolbar">
+      <button id="refreshBtn">Obnovit</button>
+      <label class="muted"><input type="checkbox" id="autoRefresh"> Auto-refresh</label>
+      </div>
       <table class="table" id="articlesTable">
         <thead>
           <tr>
@@ -83,6 +87,9 @@
     </div>
     <div class="actions">
       <button type="submit">Vyhledat stav</button>
+    </div>
+    <div class="toolbar">
+    <button id="refreshStatusBtn" type="button">Obnovit stav</button>
     </div>
   </form>
 
