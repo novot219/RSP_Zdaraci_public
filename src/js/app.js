@@ -1,3 +1,6 @@
+// db.js — zatim se nepouziva
+
+
 import { initDB, addArticle, getAllArticles, deleteArticle, findArticleByEmailAndFilename } from './db.js';
 
 const MAX_SIZE_BYTES = 15 * 1024 * 1024; // 15 MB

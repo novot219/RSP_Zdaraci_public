@@ -1,4 +1,4 @@
-// db.js — jednoduchý wrapper nad IndexedDB pro články
+// db.js — zatim se nepouziva
 
 const DB_NAME = 'zdaraci_rspr_mvp';
 const DB_VERSION = 3;          
@@ -6,7 +6,6 @@ const STORE = 'articles';
 
 let _db;
 
-/** Inicializace DB, vrací Promise */
 export function initDB() {
   return new Promise((resolve, reject) => {
     const req = indexedDB.open(DB_NAME, DB_VERSION);
@@ -35,7 +34,6 @@ export function initDB() {
   });
 }
 
-/** Pidani clanku do DB a vraceni ID  */
 export function addArticle(record) {
   return new Promise((resolve, reject) => {
     const tx = _db.transaction(STORE, 'readwrite');
