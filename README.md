@@ -41,5 +41,5 @@ Martin Novotný – Scrum Master
 Matyáš Kulhánek – Product Owner
 
 Tomáš Houf – Team Member
-
 Miloslav Bratršovský – Team Member
+Ondřej Műhlhandel – Team Member
