@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Přihlášení</title>
+<link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+<div class="container">
+	<div class="card">
+		<h1 class="title">Přihlášení do systému</h1>
+		<form id="loginForm" class="form" novalidate>
+			<div class="field">
+				<label for="username" class="label">Uživatelské jméno</label>
+				<input id="username" name="username" type="text" autocomplete="username" class="input" placeholder="např. autor" required>
+			</div>
+			<div class="field">
+				<label for="password" class="label">Heslo</label>
+				<input id="password" name="password" type="password" autocomplete="current-password" class="input" placeholder="••••••••" required>
+			</div>
+			<div class="actions">
+				<button id="loginBtn" type="submit" class="btn btn-primary">Přihlásit se</button>
+			</div>
+			<p id="error" class="error" aria-live="polite"></p>
+		</form>
+	</div>
+</div>
+<script src="assets/js/auth.js"></script>
+</body>
+</html>
