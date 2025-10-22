@@ -16,10 +16,87 @@
 </header>
 <main class="page">
 	<section class="panel grid">
-		<h2>Obsah pro autora</h2>
-		<p>Tady bude obsah pro roli Autor.</p>
+		<div class="panel-head">
+			<h2>Dashboard autora</h2>
+			<div class="actions-bar">
+				<button id="a-new" class="btn btn-primary">Nahrát článek</button>
+			</div>
+		</div>
+		<div id="a-empty" class="empty">Zatím nemáte žádné články. Klikněte na „Nahrát článek“.</div>
+		<table id="a-table" class="table" style="display:none">
+			<thead>
+				<tr>
+					<th>Název</th>
+					<th>Spoluautoři</th>
+					<th>Kontakt</th>
+					<th>Stav</th>
+					<th>Poslední verze</th>
+					<th>Naposledy změněno</th>
+					<th>Akce</th>
+				</tr>
+			</thead>
+			<tbody id="a-rows"></tbody>
+		</table>
 	</section>
 </main>
+
+<div id="uploadModal" class="modal" aria-hidden="true">
+	<div class="box">
+		<h3>Nahrát článek</h3>
+		<div class="row">
+			<label class="label" for="u-file">Soubor (PDF nebo DOCX)</label>
+			<input id="u-file" class="input" type="file" accept=".pdf,.doc,.docx">
+			<span class="label">Max 15&nbsp;MB</span>
+		</div>
+		<div class="row">
+			<label class="label" for="u-title">Název článku <span class="badge">povinné</span></label>
+			<input id="u-title" class="input" type="text" placeholder="Název článku">
+		</div>
+		<div class="row">
+			<label class="label" for="u-coauthors">Spoluautoři (oddělit čárkou)</label>
+			<input id="u-coauthors" class="input" type="text" placeholder="Jméno Příjmení, Jméno Příjmení">
+		</div>
+		<div class="row">
+			<label class="label" for="u-email">Kontaktní e-mail <span class="badge">povinné</span></label>
+			<input id="u-email" class="input" type="email" placeholder="autor@skola.cz">
+		</div>
+		<div class="bar">
+			<button id="u-cancel" class="btn btn-ghost">Zrušit</button>
+			<button id="u-submit" class="btn btn-primary">Nahrát</button>
+		</div>
+		<p id="u-error" class="error" aria-live="polite"></p>
+	</div>
+</div>
+
+<div id="versionsModal" class="modal" aria-hidden="true">
+	<div class="box">
+		<h3>Verze článku: <span id="v-title"></span></h3>
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Verze</th>
+					<th>Soubor</th>
+					<th>Velikost</th>
+					<th>Nahráno</th>
+				</tr>
+			</thead>
+			<tbody id="v-rows"></tbody>
+		</table>
+		<div class="row mt">
+			<label class="label" for="v-file">Nahrát novou verzi (PDF/DOCX)</label>
+			<input id="v-file" class="input" type="file" accept=".pdf,.doc,.docx">
+		</div>
+		<div class="bar">
+			<button id="v-cancel" class="btn btn-ghost">Zavřít</button>
+			<button id="v-submit" class="btn btn-primary">Nahrát novou verzi</button>
+		</div>
+		<p id="v-error" class="error" aria-live="polite"></p>
+	</div>
+</div>
+
+<div id="toast" class="toast">Hotovo.</div>
+
 <script src="../assets/js/guard.js"></script>
+<script src="../assets/js/author.js"></script>
 </body>
 </html>
