@@ -1,25 +1,145 @@
 <!DOCTYPE html>
 <html lang="cs">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Redaktor</title>
-<link rel="stylesheet" href="../assets/css/styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Redaktor – Přehled článků</title>
+  <link rel="stylesheet" href="../assets/css/styles.css" />
 </head>
 <body data-required-role="redaktor">
-<header class="header">
-	<div class="wrap">
-		<h1>Panel: Redaktor</h1>
-		<div class="meta">Přihlášen: <strong data-username></strong> (<span data-role></span>)</div>
-		<button id="logoutBtn" class="btn btn-danger">Odhlásit</button>
-	</div>
-</header>
-<main class="page">
-	<section class="panel grid">
-		<h2>Obsah pro redaktora</h2>
-		<p>Tady bude obsah pro roli Redaktor.</p>
-	</section>
-</main>
-<script src="../assets/js/guard.js"></script>
+  <header class="header">
+    <div class="wrap">
+      <h1>Redakční panel</h1>
+      <div class="meta">
+        Přihlášen: <strong data-username></strong> (<span data-role></span>)
+      </div>
+      <div>
+        <button id="logoutBtn" class="btn btn-danger">Odhlásit</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Přehled článků a stavů</h2>
+        <div class="actions-bar">
+          <input id="flt-q" class="input" placeholder="Hledat v názvu / spoluautorech / e-mailu" />
+          <select id="flt-status" class="input">
+            <option value="">Všechny stavy</option>
+            <option>Koncept</option>
+            <option>Čeká na kontrolu</option>
+            <option>V recenzi</option>
+            <option>Vráceno k úpravě</option>
+            <option>Přijato</option>
+            <option>Odmítnuto</option>
+            <option>Publikováno</option>
+            <option>Odložen</option>
+          </select>
+          <button id="flt-clear" class="btn btn-ghost">Vyčistit</button>
+        </div>
+      </div>
+
+      <div id="r-empty" class="empty" style="display:none">
+        Zatím nejsou žádné články k zobrazení.
+      </div>
+
+      <table id="r-table" class="table" style="display:none">
+        <thead>
+          <tr>
+            <th data-sort="title">Název</th>
+            <th data-sort="author">Autor</th>
+            <th data-sort="status">Stav</th>
+            <th data-sort="version">Verze</th>
+            <th data-sort="updated">Poslední změna</th>
+            <th>Akce</th>
+          </tr>
+        </thead>
+        <tbody id="r-rows"></tbody>
+      </table>
+    </section>
+  </main>
+
+  <!-- Screening / detail -->
+  <div id="detailModal" class="modal">
+    <div class="box">
+      <h3 id="d-title">Detail článku</h3>
+
+      <div class="row">
+        <div><strong>Autor:</strong> <span id="d-author">—</span></div>
+        <div><strong>Kontakt:</strong> <span id="d-email">—</span></div>
+        <div><strong>Aktuální stav:</strong> <span id="d-status" class="badge">—</span></div>
+      </div>
+
+      <div class="row">
+        <h4>Verze souboru</h4>
+        <div id="d-versions"></div>
+      </div>
+
+      <div class="row">
+        <h4>Kontrola formální a tematické správnosti</h4>
+        <p class="label">Zaškrtni, co je v pořádku:</p>
+        <label><input type="checkbox" class="d-chk" data-key="format"> Správný formát (PDF/DOCX)</label>
+        <label><input type="checkbox" class="d-chk" data-key="anonymity"> Dodržena anonymizace (pokud požadováno)</label>
+        <label><input type="checkbox" class="d-chk" data-key="length"> Rozsah v mezích</label>
+        <label><input type="checkbox" class="d-chk" data-key="thematic"> Tématicky relevantní</label>
+        <label><input type="checkbox" class="d-chk" data-key="attachments"> Přílohy / obrázky ok</label>
+        <textarea id="d-notes" class="input mt" rows="3" placeholder="Poznámky k screeningu (nepovinné)"></textarea>
+      </div>
+
+      <div class="row">
+        <h4>Rozhodnutí – změna stavu</h4>
+        <textarea id="d-reason" class="input" rows="2" placeholder="Důvod / komentář (povinný při vrácení či odmítnutí)"></textarea>
+      </div>
+
+      <div class="bar">
+        <button id="d-close" class="btn btn-ghost">Zavřít</button>
+        <button id="d-return" class="btn btn-danger">Vrátit k úpravě</button>
+        <button id="d-accept" class="btn btn-primary">Pokračovat do recenzního řízení</button>
+      </div>
+
+      <hr style="opacity:.2;margin:14px 0;border:none;border-top:1px solid rgba(255,255,255,.12)">
+
+      <div class="row">
+        <h4>Aktivní recenze & termíny</h4>
+        <div id="d-reviews">—</div>
+      </div>
+
+      <div class="bar">
+        <button id="d-assign" class="btn btn-ghost">Přiřadit recenzenty…</button>
+        <button id="d-mark-accepted" class="btn btn-primary">Označit jako „Přijato“</button>
+        <button id="d-mark-rejected" class="btn btn-danger">Označit jako „Odmítnuto“</button>
+        <button id="d-mark-postponed" class="btn btn-ghost">Označit jako „Odložen“</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Přiřazení / úprava termínu -->
+  <div id="assignModal" class="modal">
+    <div class="box">
+      <h3>Přiřazení recenzentů / úprava termínu</h3>
+
+      <div class="row">
+        <label class="label">Vyber recenzenty (1–2):</label>
+        <select id="a-reviewers" class="input" multiple size="5"></select>
+      </div>
+
+      <div class="row">
+        <label class="label">Termín odevzdání posudku:</label>
+        <input id="a-due" type="date" class="input" />
+      </div>
+
+      <div class="bar">
+        <button id="a-cancel" class="btn btn-ghost">Zrušit</button>
+        <button id="a-save" class="btn btn-primary">Uložit / Odeslat</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script src="../assets/js/guard.js"></script>
+  <script src="../assets/js/shared.js"></script>
+  <script src="../assets/js/redaktor.js"></script>
 </body>
 </html>
