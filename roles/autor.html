@@ -27,8 +27,6 @@
 			<thead>
 				<tr>
 					<th>Název</th>
-					<th>Spoluautoři</th>
-					<th>Kontakt</th>
 					<th>Stav</th>
 					<th>Poslední verze</th>
 					<th>Naposledy změněno</th>
@@ -40,6 +38,7 @@
 	</section>
 </main>
 
+<!-- Nahrání článku -->
 <div id="uploadModal" class="modal" aria-hidden="true">
 	<div class="box">
 		<h3>Nahrát článek</h3>
@@ -68,6 +67,7 @@
 	</div>
 </div>
 
+<!-- Správa verzí -->
 <div id="versionsModal" class="modal" aria-hidden="true">
 	<div class="box">
 		<h3>Verze článku: <span id="v-title"></span></h3>
@@ -94,9 +94,28 @@
 	</div>
 </div>
 
+<!-- (US-5) Zobrazení finálního rozhodnutí -->
+<div id="decisionModal" class="modal" aria-hidden="true">
+	<div class="box">
+		<h3 id="dec-title">Výsledek recenzního řízení</h3>
+    <div class="row">
+      <strong>Stav:</strong> <span id="dec-status" class="badge">—</span>
+    </div>
+		<div class="row review-display">
+      <h4>Zdůvodnění:</h4>
+      <p id="dec-reason"></p>
+    </div>
+		<div class="bar">
+			<button id="dec-close" class="btn btn-ghost">Zavřít</button>
+		</div>
+	</div>
+</div>
+
 <div id="toast" class="toast">Hotovo.</div>
 
 <script src="../assets/js/guard.js"></script>
+<script src="../assets/js/shared.js"></script> <!-- TENTO ŘÁDEK BYL PŘIDÁN -->
 <script src="../assets/js/author.js"></script>
 </body>
 </html>
+

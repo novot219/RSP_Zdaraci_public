@@ -1,7 +1,8 @@
 const users = {
 	autor: { password: "heslo", role: "autor", target: "roles/autor.html" },
 	redaktor: { password: "heslo", role: "redaktor", target: "roles/redaktor.html" },
-	recenzent: { password: "heslo", role: "recenzent", target: "roles/recenzent.html" }
+	recenzent: { password: "heslo", role: "recenzent", target: "roles/recenzent.html" },
+	sefredaktor: { password: "heslo", role: "sefredaktor", target: "roles/sefredaktor.html" } // PŘIDÁNO
 };
 
 const form = document.getElementById("loginForm");

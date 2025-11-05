@@ -30,6 +30,7 @@
             <option>Koncept</option>
             <option>Čeká na kontrolu</option>
             <option>V recenzi</option>
+            <option>K rozhodnutí</option>
             <option>Vráceno k úpravě</option>
             <option>Přijato</option>
             <option>Odmítnuto</option>
@@ -62,7 +63,7 @@
 
   <!-- Screening / detail -->
   <div id="detailModal" class="modal">
-    <div class="box">
+    <div class="box" style="max-width: 600px;">
       <h3 id="d-title">Detail článku</h3>
 
       <div class="row">
@@ -89,7 +90,7 @@
 
       <div class="row">
         <h4>Rozhodnutí – změna stavu</h4>
-        <textarea id="d-reason" class="input" rows="2" placeholder="Důvod / komentář (povinný při vrácení či odmítnutí)"></textarea>
+        <textarea id="d-reason" class="input" rows="2" placeholder="Důvod / komentář (povinný při vrácení)"></textarea>
       </div>
 
       <div class="bar">
@@ -98,18 +99,16 @@
         <button id="d-accept" class="btn btn-primary">Pokračovat do recenzního řízení</button>
       </div>
 
-      <hr style="opacity:.2;margin:14px 0;border:none;border-top:1px solid rgba(255,255,255,.12)">
+      <hr class="hr-divider">
 
       <div class="row">
         <h4>Aktivní recenze & termíny</h4>
-        <div id="d-reviews">—</div>
+        <div id="d-reviews" class="reviews-list-editor"></div>
       </div>
 
       <div class="bar">
-        <button id="d-assign" class="btn btn-ghost">Přiřadit recenzenty…</button>
-        <button id="d-mark-accepted" class="btn btn-primary">Označit jako „Přijato“</button>
-        <button id="d-mark-rejected" class="btn btn-danger">Označit jako „Odmítnuto“</button>
-        <button id="d-mark-postponed" class="btn btn-ghost">Označit jako „Odložen“</button>
+        <button id="d-assign" class="btn btn-ghost">Přiřadit / změnit recenzenty…</button>
+        <button id="d-send-to-chief" class="btn btn-primary">Postoupit šéfredaktorovi</button>
       </div>
     </div>
   </div>
@@ -132,6 +131,19 @@
       <div class="bar">
         <button id="a-cancel" class="btn btn-ghost">Zrušit</button>
         <button id="a-save" class="btn btn-primary">Uložit / Odeslat</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Zobrazení posudku -->
+  <div id="viewReviewModal" class="modal">
+    <div class="box" style="max-width: 600px;">
+      <h3 id="v-rev-title">Zobrazení posudku</h3>
+      <div id="v-rev-content" class="review-display">
+        <!-- Obsah posudku -->
+      </div>
+      <div class="bar">
+        <button id="v-rev-close" class="btn btn-ghost">Zavřít</button>
       </div>
     </div>
   </div>

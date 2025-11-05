@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Recenzent</title>
+<title>Recenzent – Přehled úkolů</title>
 <link rel="stylesheet" href="../assets/css/styles.css">
 </head>
 <body data-required-role="recenzent">
@@ -15,11 +15,83 @@
 	</div>
 </header>
 <main class="page">
-	<section class="panel grid">
-		<h2>Obsah pro recenzenta</h2>
-		<p>Tady bude obsah pro roli Recenzent.</p>
+	<section class="panel">
+    <div class="panel-head">
+      <h2>Přiřazené články</h2>
+    </div>
+
+    <div id="r-empty" class="empty" style="display:none">
+      Zatím nemáte přiřazené žádné články.
+    </div>
+
+    <table id="r-table" class="table" style="display:none">
+      <thead>
+        <tr>
+          <th>Název článku</th>
+          <th>Stav mé recenze</th>
+          <th>Termín</th>
+          <th>Akce</th>
+        </tr>
+      </thead>
+      <tbody id="r-rows"></tbody>
+    </table>
 	</section>
 </main>
+
+<!-- Modal: Zpracování posudku -->
+<div id="reviewModal" class="modal">
+  <div class="box" style="max-width: 600px;">
+    <h3 id="v-title">Zpracovat posudek</h3>
+    
+    <div class="row">
+      <h4>Článek ke stažení</h4>
+      <div id="v-download"></div>
+    </div>
+
+    <hr class="hr-divider">
+
+    <div class="form review-form">
+      <div class="field">
+        <label class="label" for="v-summary">Stručný souhrn článku:</label>
+        <textarea id="v-summary" class="input" rows="4"></textarea>
+      </div>
+      <div class="field">
+        <label class="label" for="v-strengths">Silné stránky:</label>
+        <textarea id="v-strengths" class="input" rows="3"></textarea>
+      </div>
+      <div class="field">
+        <label class="label" for="v-weaknesses">Slabé stránky:</label>
+        <textarea id="v-weaknesses" class="input" rows="3"></textarea>
+      </div>
+      <div class="field">
+        <label class="label" for="v-recommendation">Finální doporučení:</label>
+        <select id="v-recommendation" class="input">
+          <option value="">-- Vyberte --</option>
+          <option value="accept">Přijmout</option>
+          <option value="minor">Přijmout s drobnými úpravami</option>
+          <option value="major">Přepracovat</option>
+          <option value="reject">Odmítnout</option>
+        </select>
+      </div>
+      <div class="field">
+        <label class="label" for="v-comments">Komentář (pouze pro redakci / šéfredaktora):</label>
+        <textarea id="v-comments" class="input" rows="3" placeholder="Např. Článek je zajímavý, ale..."></textarea>
+      </div>
+    </div>
+
+    <div class="bar">
+      <button id="v-cancel" class="btn btn-ghost">Zavřít</button>
+      <button id="v-save-draft" class="btn btn-ghost">Uložit rozpracované</button>
+      <button id="v-submit" class="btn btn-primary">Odeslat finální posudek</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
 <script src="../assets/js/guard.js"></script>
+<script src="../assets/js/shared.js"></script>
+<script src="../assets/js/recenzent.js"></script>
 </body>
 </html>
+

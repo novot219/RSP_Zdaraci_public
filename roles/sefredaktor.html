@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Šéfredaktor – Finální rozhodnutí</title>
+  <link rel="stylesheet" href="../assets/css/styles.css" />
+</head>
+<body data-required-role="sefredaktor">
+  <header class="header">
+    <div class="wrap">
+      <h1>Panel Šéfredaktora</h1>
+      <div class="meta">
+        Přihlášen: <strong data-username></strong> (<span data-role></span>)
+      </div>
+      <div>
+        <button id="logoutBtn" class="btn btn-danger">Odhlásit</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Články k finálnímu rozhodnutí</h2>
+        <div class="actions-bar">
+          <select id="flt-status" class="input">
+            <option value="">Všechny stavy</option>
+            <option value="K rozhodnutí">K rozhodnutí</option>
+            <option value="V recenzi">V recenzi</option>
+            <option value="Přijato">Přijato</option>
+            <option value="Odmítnuto">Odmítnuto</option>
+            <option value="Vráceno k úpravě">Vráceno k úpravě</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="r-empty" class="empty" style="display:none">
+        Zatím nejsou žádné články k zobrazení.
+      </div>
+
+      <table id="r-table" class="table" style="display:none">
+        <thead>
+          <tr>
+            <th>Název</th>
+            <th>Autor</th>
+            <th>Stav</th>
+            <th>Posudky</th>
+            <th>Poslední změna</th>
+            <th>Akce</th>
+          </tr>
+        </thead>
+        <tbody id="r-rows"></tbody>
+      </table>
+    </section>
+  </main>
+
+  <!-- Modal: Finální rozhodnutí -->
+  <div id="decisionModal" class="modal">
+    <div class="box" style="max-width: 700px;">
+      <h3 id="d-title">Detail článku a rozhodnutí</h3>
+
+      <div class="row">
+        <div><strong>Autor:</strong> <span id="d-author">—</span></div>
+        <div><strong>Kontakt:</strong> <span id="d-email">—</span></div>
+        <div><strong>Aktuální stav:</strong> <span id="d-status" class="badge">—</span></div>
+      </div>
+
+      <div class="row">
+        <h4>Verze souboru ke stažení</h4>
+        <div id="d-versions"></div>
+      </div>
+
+      <hr class="hr-divider">
+
+      <div class="row">
+        <h4>Odevzdané posudky</h4>
+        <div id="d-reviews-summary" class="empty">Zatím žádné odevzdané posudky.</div>
+        <div id="d-reviews-list" class="reviews-container">
+          <!-- Posudky budou vloženy sem -->
+        </div>
+      </div>
+      
+      <hr class="hr-divider">
+
+      <div class="row">
+        <h4>Finální rozhodnutí</h4>
+        <p class="label">Zdůvodnění pro autora (povinné při odmítnutí nebo vrácení):</p>
+        <textarea id="d-reason" class="input" rows="4" placeholder="Např. Děkujeme za zaslání článku, bohužel..."></textarea>
+      </div>
+
+      <div class="bar">
+        <button id="d-close" class="btn btn-ghost">Zavřít</button>
+        <button id="d-return" class="btn btn-warning">Vrátit autorovi k úpravě</button>
+        <button id="d-reject" class="btn btn-danger">Odmítnout</button>
+        <button id="d-accept" class="btn btn-primary">Přijmout k publikaci</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script src="../assets/js/guard.js"></script>
+  <script src="../assets/js/shared.js"></script>
+  <script src="../assets/js/sefredaktor.js"></script>
+</body>
+</html>

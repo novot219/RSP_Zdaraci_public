@@ -1,7 +1,8 @@
 const roleRoutes = {
 	autor: "roles/autor.html",
 	redaktor: "roles/redaktor.html",
-	recenzent: "roles/recenzent.html"
+	recenzent: "roles/recenzent.html",
+	sefredaktor: "roles/sefredaktor.html" // PŘIDÁNO
 };
 
 function readSession() {

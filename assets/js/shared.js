@@ -17,6 +17,7 @@ window.Shared = (function () {
   }
 
   function fmtDate(ts) {
+    if (!ts) return "—";
     const d = new Date(ts);
     const p = (n) => String(n).padStart(2, "0");
     return (
@@ -33,6 +34,7 @@ window.Shared = (function () {
   }
 
   function fmtDateOnly(ts) {
+    if (!ts) return "";
     const d = new Date(ts);
     const p = (n) => String(n).padStart(2, "0");
     return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
@@ -47,6 +49,7 @@ window.Shared = (function () {
       case "Přijato": return "accepted";
       case "Odmítnuto": return "rejected";
       case "Publikováno": return "published";
+      case "K rozhodnutí": return "review"; // Stejný styl jako "V recenzi"
       case "Odložen": return "queued"; // reuse stylu
       default: return "draft";
     }
@@ -76,7 +79,8 @@ window.Shared = (function () {
         list = [
           { id: "recenzent", name: "recenzent" },
           { id: "recenzent2", name: "recenzent2" },
-          { id: "redaktor", name: "redaktor (test)" }
+          { id: "redaktor", name: "redaktor (test)" },
+          { id: "sefredaktor", name: "šéfredaktor (test)" } // PŘIDÁNO
         ];
         writeReviewers(list);
       }
@@ -98,15 +102,18 @@ window.Shared = (function () {
       channel: "in-app",
       message,
       at: Date.now(),
+      read: false, // Přidáno pro sledování
       meta: meta || {}
     });
   }
 
   // Pomocné výpočty k termínům
   function daysUntil(ts) {
+    if (!ts) return null;
     const ONE = 24 * 60 * 60 * 1000;
-    const now = Date.now();
-    return Math.floor((ts - now) / ONE);
+    const now = new Date().setHours(0, 0, 0, 0); // Začátek dneška
+    const due = new Date(ts).setHours(0, 0, 0, 0); // Začátek dne termínu
+    return Math.floor((due - now) / ONE);
   }
 
   return {

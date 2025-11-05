@@ -1,5 +1,3 @@
-
-
 (function () {
   const {
     readArticles, writeArticles, fmtDate, fmtDateOnly, statusCode, showToast,
@@ -33,9 +31,7 @@
   const btnReturn = document.getElementById("d-return");
   const btnAccept = document.getElementById("d-accept");
   const btnAssign = document.getElementById("d-assign");
-  const btnMarkAccepted = document.getElementById("d-mark-accepted");
-  const btnMarkRejected = document.getElementById("d-mark-rejected");
-  const btnMarkPostponed = document.getElementById("d-mark-postponed");
+  const btnSendToChief = document.getElementById("d-send-to-chief");
   const dReviews = document.getElementById("d-reviews");
 
   // Modal: assign
@@ -44,6 +40,26 @@
   const aDue = document.getElementById("a-due");
   const aCancel = document.getElementById("a-cancel");
   const aSave = document.getElementById("a-save");
+  
+  // Modal: view review
+  const viewReviewModal = document.getElementById("viewReviewModal");
+  const vRevTitle = document.getElementById("v-rev-title");
+  const vRevContent = document.getElementById("v-rev-content");
+  const vRevClose = document.getElementById("v-rev-close");
+
+  // Mapování
+  const reviewStatusMap = {
+    pending: "Čeká na přijetí",
+    accepted: "Přijato recenzentem",
+    declined: "Odmítnuto recenzentem",
+    submitted: "Odevzdáno"
+  };
+  const recommendationMap = {
+    accept: "Přijmout",
+    minor: "Přijmout s drobnými úpravami",
+    major: "Přepracovat",
+    reject: "Odmítnout"
+  };
 
   // --- Přehled / render ---
   function getFiltered() {
@@ -80,54 +96,43 @@
   }
 
   function render() {
-  const data = getFiltered();
-  if (!data.length) {
-    tableEl.style.display = "none";
-    emptyEl.style.display = "block";
+    const data = getFiltered();
+    if (!data.length) {
+      tableEl.style.display = "none";
+      emptyEl.style.display = "block";
+      rowsEl.innerHTML = "";
+      return;
+    }
+    emptyEl.style.display = "none";
+    tableEl.style.display = "table";
     rowsEl.innerHTML = "";
-    return;
+
+    data.forEach((a) => {
+      const authorLabel = (a.authorName || a.contactEmail || a.author || "—");
+      const tr = document.createElement("tr");
+      const last = lastVersion(a);
+      const lastLabel = last ? last.label : "v1";
+      const ts = a.updatedAt || a.createdAt || Date.now();
+      const status = a.status || "Koncept";
+      const badge = `<span class='badge' data-status='${statusCode(status)}'>${status}</span>`;
+
+      tr.innerHTML =
+        `<td>${a.title || a.fileName || "—"}</td>` +
+        `<td>${authorLabel}</td>` +
+        `<td>${badge}</td>` +
+        `<td>${lastLabel}</td>` +
+        `<td>${fmtDate(ts)}</td>` +
+        `<td><div class='row-actions'>
+           <button class='btn btn-primary' data-act='detail' data-id='${a.id}'>Detail / kontrola</button>
+         </div></td>`;
+
+      rowsEl.appendChild(tr);
+    });
+
+    rowsEl.querySelectorAll("[data-act='detail']").forEach((btn) => {
+      btn.addEventListener("click", () => openDetail(btn.getAttribute("data-id")));
+    });
   }
-  emptyEl.style.display = "none";
-  tableEl.style.display = "table";
-  rowsEl.innerHTML = "";
-
-  data.forEach((a) => {
-    const authorLabel =
-  (a.authorName && a.authorName.trim()) ||   // kdyby někdy existovalo skutečné jméno
-  (a.contactEmail && a.contactEmail.trim()) || // ← použij e-mail
-  a.author || "—";
-
-
-    const tr = document.createElement("tr");
-    const last = lastVersion(a);
-    const lastLabel = last ? last.label : "v1";
-    const ts = a.updatedAt || a.createdAt || Date.now();
-
-    const badge =
-      "<span class='badge' data-status='" +
-      statusCode(a.status || "Koncept") +
-      "'>" +
-      (a.status || "Koncept") +
-      "</span>";
-
-    tr.innerHTML =
-      "<td>" + (a.title || a.fileName || "—") + "</td>" +
-      "<td>" + authorLabel + "</td>" +
-      "<td>" + badge + "</td>" +
-      "<td>" + lastLabel + "</td>" +
-      "<td>" + fmtDate(ts) + "</td>" +
-      "<td><div class='row-actions'>" +
-      "<button class='btn btn-primary' data-act='detail' data-id='" + a.id + "'>Detail / kontrola</button>" +
-      "</div></td>";
-
-    rowsEl.appendChild(tr);
-  });
-
-  rowsEl.querySelectorAll("[data-act='detail']").forEach((btn) => {
-    btn.addEventListener("click", () => openDetail(btn.getAttribute("data-id")));
-  });
-}
-
 
   // --- Detail / screening / rozhodnutí ---
   function openDetail(id) {
@@ -137,15 +142,11 @@
     if (!art) return;
 
     dTitle.textContent = art.title || art.fileName || "—";
-    dAuthor.textContent =
-  (art.authorName && art.authorName.trim()) ||
-  (art.contactEmail && art.contactEmail.trim()) ||  // ← e-mail
-  art.author || "—";
-
-    art.author || "—";
+    dAuthor.textContent = (art.authorName || art.contactEmail || art.author || "—");
     dEmail.textContent = art.contactEmail || "—";
-    dStatus.textContent = art.status || "Koncept";
-    dStatus.setAttribute("data-status", statusCode(art.status || "Koncept"));
+    const status = art.status || "Koncept";
+    dStatus.textContent = status;
+    dStatus.setAttribute("data-status", statusCode(status));
 
     // verze
     dVersions.innerHTML = "";
@@ -174,13 +175,14 @@
     renderReviews(art);
 
     // Povolení tlačítek dle stavu
-    const st = art.status || "Koncept";
-    const allowScreening = st === "Čeká na kontrolu" || st === "Vráceno k úpravě";
+    const allowScreening = status === "Čeká na kontrolu";
     btnAccept.disabled = !allowScreening;
     btnReturn.disabled = !allowScreening;
 
-    // Přiřazení recenzentů dostupné pro "V recenzi" a "Odložen"
-    btnAssign.disabled = !(st === "V recenzi" || st === "Odložen");
+    // Tlačítka recenzí
+    const inReview = ["V recenzi", "K rozhodnutí", "Odložen"].includes(status);
+    btnAssign.disabled = !inReview;
+    btnSendToChief.disabled = status !== "V recenzi" && status !== "K rozhodnutí";
 
     modal.style.display = "flex";
   }
@@ -189,56 +191,69 @@
     const list = Array.isArray(art.reviews) ? art.reviews : [];
     if (!list.length) { dReviews.textContent = "—"; return; }
 
-    const wrap = document.createElement("div");
+    dReviews.innerHTML = ""; // Vyčistit
+    
     list.forEach((r, idx) => {
       const row = document.createElement("div");
-      const overdue = r.dueAt && Date.now() > r.dueAt && (r.status || "pending") === "pending";
+      row.className = "review-item";
+      
+      const status = r.status || "pending";
       const dueStr = r.dueAt ? fmtDateOnly(r.dueAt) : "—";
-      const days = r.dueAt ? daysUntil(r.dueAt) : null;
+      const days = daysUntil(r.dueAt);
+      
+      let statusLabel = reviewStatusMap[status] || status;
+      if (status === 'pending' || status === 'accepted') {
+         if (days < 0) statusLabel += ` <span class='badge' data-status='rejected'>(Po termínu)</span>`;
+      }
+      
+      let actions = "";
+      if (status === 'submitted') {
+        actions = `<button class='btn btn-ghost btn-sm' data-act='view-review' data-idx='${idx}'>Zobrazit posudek</button>`;
+      }
+      // (US-1) Odmítnutí vrací redaktorovi -> redaktor může přiřadit znovu (tlačítko d-assign)
+      if (status === 'declined') {
+        statusLabel = `<span style="color:var(--danger);">${statusLabel}</span>`;
+      }
 
       row.innerHTML =
-        `${r.reviewer} • stav: ${r.status || "pending"} • termín: ${dueStr}` +
-        (overdue ? " <span class='badge' data-status='rejected'>po termínu</span>" :
-         (days !== null && days <= 3 ? " <span class='badge' data-status='queued'>blíží se termín</span>" : ""));
+        `<div><strong>${r.reviewer}</strong></div>
+         <div>Stav: ${statusLabel}</div>
+         <div>Termín: ${dueStr}</div>
+         <div class="review-actions">${actions}</div>`;
 
-      // Inline akce: upravit termín
-      const btn = document.createElement("button");
-      btn.className = "btn btn-ghost";
-      btn.textContent = "Upravit termín";
-      btn.style.marginLeft = "8px";
-
-      const inp = document.createElement("input");
-      inp.type = "date";
-      inp.className = "input";
-      inp.style.marginLeft = "8px";
-      inp.value = r.dueAt ? fmtDateOnly(r.dueAt) : "";
-
-      const save = document.createElement("button");
-      save.className = "btn btn-primary";
-      save.textContent = "Uložit";
-      save.style.marginLeft = "6px";
-      save.style.display = "none";
-
-      btn.addEventListener("click", () => {
-        save.style.display = "inline-block";
-        inp.focus();
-      });
-
-      save.addEventListener("click", () => {
-        const v = inp.value ? new Date(inp.value).getTime() : NaN;
-        if (!v || isNaN(v)) { showToast("Zadej platný termín.", true); return; }
-        updateDueDate(art.id, idx, v);
-      });
-
-      row.appendChild(btn);
-      row.appendChild(inp);
-      row.appendChild(save);
-      wrap.appendChild(row);
+      dReviews.appendChild(row);
     });
-
-    dReviews.innerHTML = "";
-    dReviews.appendChild(wrap);
+    
+    // Listenery pro zobrazení posudku
+    dReviews.querySelectorAll("[data-act='view-review']").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const idx = parseInt(btn.dataset.idx, 10);
+        showSubmittedReview(art, idx);
+      });
+    });
   }
+  
+  // Zobrazení odevzdaného posudku
+  function showSubmittedReview(art, reviewIndex) {
+    const review = art.reviews[reviewIndex];
+    if (!review || !review.reviewData) {
+      showToast("Data posudku nenalezena.", true); return;
+    }
+    const data = review.reviewData;
+    vRevTitle.textContent = `Posudek od: ${review.reviewer}`;
+    vRevContent.innerHTML = `
+      <p><strong>Doporučení:</strong> ${recommendationMap[data.recommendation] || data.recommendation}</p>
+      <p><strong>Souhrn:</strong> ${data.summary || "—"}</p>
+      <p><strong>Silné stránky:</strong> ${data.strengths || "—"}</p>
+      <p><strong>Slabé stránky:</strong> ${data.weaknesses || "—"}</p>
+      <p><strong>Komentář pro redakci:</strong> ${data.comments || "—"}</p>
+    `;
+    viewReviewModal.style.display = "flex";
+  }
+  
+  vRevClose.addEventListener("click", () => viewReviewModal.style.display = "none");
+  viewReviewModal.addEventListener("click", (e) => { if (e.target === viewReviewModal) viewReviewModal.style.display = "none"; });
+
 
   function closeDetail() {
     modal.style.display = "none";
@@ -266,30 +281,29 @@
     showToast("Článek přesunut do recenzního řízení."); closeDetail(); render();
   });
 
-  btnMarkAccepted.addEventListener("click", function () {
+  // (US-4) Finální rozhodnutí dělá šéfredaktor. Redaktor pouze posouvá.
+  btnSendToChief.addEventListener("click", function () {
     if (!CURRENT_ID) return;
-    const note = dReason.value.trim();
-    changeFinalDecision(CURRENT_ID, "Přijato", note, "accepted");
-    notifyAuthor(CURRENT_ID, "Článek byl přijat. " + (note || ""));
-    showToast("Stav změněn na „Přijato“."); closeDetail(); render();
+    const all = readArticles();
+    const art = all.find((x) => x.id === CURRENT_ID);
+    if (!art) return;
+    
+    // Změna stavu na "K rozhodnutí"
+    art.status = "K rozhodnutí";
+    art.statusChangedAt = Date.now();
+    art.updatedAt = Date.now();
+    
+    if (!Array.isArray(art.decisions)) art.decisions = [];
+    art.decisions.push({ type: "sent_to_chief", by: readSessionUser(), at: Date.now() });
+    
+    pushNotification(art, "sefredaktor", `Článek "${art.title}" byl postoupen k finálnímu rozhodnutí.`, { type: "ready_for_decision" });
+    
+    writeArticles(all);
+    showToast("Článek postoupen šéfredaktorovi.");
+    closeDetail();
+    render();
   });
 
-  btnMarkRejected.addEventListener("click", function () {
-    if (!CURRENT_ID) return;
-    const reason = (dReason.value || "").trim();
-    if (!reason) { showToast("Při odmítnutí uveď důvod.", true); return; }
-    changeFinalDecision(CURRENT_ID, "Odmítnuto", reason, "rejected");
-    notifyAuthor(CURRENT_ID, "Článek byl odmítnut: " + reason);
-    showToast("Stav změněn na „Odmítnuto“."); closeDetail(); render();
-  });
-
-  btnMarkPostponed.addEventListener("click", function () {
-    if (!CURRENT_ID) return;
-    const note = dReason.value.trim();
-    changeFinalDecision(CURRENT_ID, "Odložen", note, "postponed");
-    notifyAuthor(CURRENT_ID, "Článek byl dočasně odložen. " + (note || ""));
-    showToast("Stav změněn na „Odložen“."); closeDetail(); render();
-  });
 
   function updateScreeningAndStatus(id, newStatus, reason, decisionType) {
     const all = readArticles();
@@ -311,24 +325,6 @@
     };
 
     art.status = newStatus;
-    art.statusChangedAt = now;
-    art.updatedAt = now;
-
-    if (!Array.isArray(art.decisions)) art.decisions = [];
-    art.decisions.push({ type: decisionType, by: user, at: now, reason: reason || "" });
-
-    writeArticles(all);
-  }
-
-  function changeFinalDecision(id, status, reason, decisionType) {
-    const all = readArticles();
-    const art = all.find((x) => x.id === id);
-    if (!art) return;
-
-    const user = readSessionUser();
-    const now = Date.now();
-
-    art.status = status;
     art.statusChangedAt = now;
     art.updatedAt = now;
 
@@ -385,56 +381,58 @@
 
     if (!Array.isArray(art.reviews)) art.reviews = [];
     const now = Date.now();
+    let assignedNew = false;
 
     if (selected.length) {
-      // nové přiřazení 1–2 recenzentů
-      if (selected.length > 2) { showToast("Vyber 1–2 recenzenty.", true); return; }
+      if (selected.length > 2) { showToast("Vyber max. 2 nové recenzenty.", true); return; }
       selected.forEach((rid) => {
-        if (art.reviews.some((r) => r.reviewer === rid && r.status !== "declined")) return;
-        art.reviews.push({
-          reviewer: rid, assignedAt: now, dueAt: due, status: "pending", reminders: []
-        });
-        pushNotification(art, rid, `Byl vám přiřazen článek. Termín: ${fmtDateOnly(due)}`, { type: "assign" });
+        // Přiřaď jen pokud tam ještě není (nebo pokud odmítl)
+        const existing = art.reviews.find(r => r.reviewer === rid);
+        if (!existing || existing.status === 'declined') {
+          // Pokud odmítl, přepíšeme starý záznam. Jinak přidáme nový.
+          const target = (existing && existing.status === 'declined') ? existing : null;
+          
+          if (target) {
+            target.status = "pending";
+            target.assignedAt = now;
+            target.dueAt = due;
+            target.reminders = [];
+            target.reviewData = null; // Vyčistit starý posudek, pokud by tam byl
+          } else {
+             art.reviews.push({
+              reviewer: rid, assignedAt: now, dueAt: due, status: "pending", reminders: []
+            });
+          }
+          pushNotification(art, rid, `Byl vám přiřazen článek. Termín: ${fmtDateOnly(due)}`, { type: "assign" });
+          assignedNew = true;
+        }
       });
       if (art.status !== "V recenzi") art.status = "V recenzi";
       art.updatedAt = now; art.statusChangedAt = now;
-      if (!Array.isArray(art.decisions)) art.decisions = [];
-      art.decisions.push({ type: "assigned_reviewers", by: readSessionUser(), at: now, reviewers: selected });
+      if (assignedNew) {
+        if (!Array.isArray(art.decisions)) art.decisions = [];
+        art.decisions.push({ type: "assigned_reviewers", by: readSessionUser(), at: now, reviewers: selected });
+      }
     } else {
-      // režim „jen upravit termín“ všem pending recenzím
+      // režim „jen upravit termín“ všem aktivním recenzím
+      let updated = false;
       art.reviews.forEach((r) => {
-        if (r.status === "pending") r.dueAt = due;
+        if (r.status === "pending" || r.status === "accepted") {
+           r.dueAt = due;
+           updated = true;
+        }
       });
-      pushNotification(art, art.author, `Aktualizován termín recenzí na ${fmtDateOnly(due)}.`, { type: "due_updated" });
-      art.updatedAt = now;
+      if(updated) {
+        pushNotification(art, art.author, `Aktualizován termín recenzí na ${fmtDateOnly(due)}.`, { type: "due_updated" });
+        art.updatedAt = now;
+      }
     }
 
     writeArticles(all);
     showToast("Uloženo."); assignModal.style.display = "none";
     renderReviews(art);
   });
-
-  function updateDueDate(articleId, reviewIndex, newDueTs) {
-    const all = readArticles();
-    const art = all.find((x) => x.id === articleId);
-    if (!art || !Array.isArray(art.reviews) || !art.reviews[reviewIndex]) return;
-
-    const r = art.reviews[reviewIndex];
-    r.dueAt = newDueTs;
-    const now = Date.now();
-    art.updatedAt = now;
-
-    if (!Array.isArray(art.decisions)) art.decisions = [];
-    art.decisions.push({ type: "due_updated", by: readSessionUser(), at: now, reviewer: r.reviewer, dueAt: newDueTs });
-
-    pushNotification(art, r.reviewer, `Aktualizován termín posudku na ${fmtDateOnly(newDueTs)}.`, { type: "due_updated" });
-    pushNotification(art, art.author, `Aktualizován termín recenze na ${fmtDateOnly(newDueTs)} (recenzent: ${r.reviewer}).`, { type: "due_updated" });
-
-    writeArticles(all);
-    showToast("Termín upraven.");
-    renderReviews(art);
-  }
-
+  
   // --- Automatické upomínky 3 dny před deadlinem ---
   function scanAndRemind() {
     const all = readArticles();
@@ -443,17 +441,16 @@
     all.forEach((art) => {
       if (!Array.isArray(art.reviews)) return;
       art.reviews.forEach((r) => {
-        if (!r.dueAt || r.status !== "pending") return;
+        if (!r.dueAt || (r.status !== "pending" && r.status !== "accepted")) return;
         const days = daysUntil(r.dueAt);
-        // už posláno auto upozornění?
-        const hasAuto =
-          Array.isArray(r.reminders) &&
-          r.reminders.some((x) => x.type === "auto_3d");
+        if (days === null) return;
+        
+        const hasAuto = Array.isArray(r.reminders) && r.reminders.some((x) => x.type === "auto_3d");
+        
         if (days <= 3 && days >= 0 && !hasAuto) {
           if (!Array.isArray(r.reminders)) r.reminders = [];
           r.reminders.push({ type: "auto_3d", at: now });
           pushNotification(art, r.reviewer, `Připomínka: recenze má termín ${fmtDateOnly(r.dueAt)} (za ${days} dny).`, { type: "auto_reminder" });
-          pushNotification(art, art.author, `Připomínka: recenze k vašemu článku má termín ${fmtDateOnly(r.dueAt)}.`, { type: "auto_reminder" });
           changed = true;
         }
       });
@@ -465,12 +462,11 @@
   qEl.addEventListener("input", () => { FILTERS.q = qEl.value; render(); });
   statusEl.addEventListener("change", () => { FILTERS.status = statusEl.value; render(); });
   clearEl.addEventListener("click", () => {
-  FILTERS = { q: "", status: "" };
-  qEl.value = "";
-  statusEl.value = "";
-  render();
-});
-
+    FILTERS = { q: "", status: "" };
+    qEl.value = "";
+    statusEl.value = "";
+    render();
+  });
 
   document.querySelectorAll("th[data-sort]").forEach((th) => {
     th.style.cursor = "pointer";
