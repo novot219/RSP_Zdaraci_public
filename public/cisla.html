@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Vydaná čísla | Journal</title>
+  <link rel="stylesheet" href="../assets/css/styles.css" />
+  <style>
+    details{border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:10px 14px;margin-bottom:10px}
+    summary{cursor:pointer;font-weight:800}
+    .art{padding:8px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+    .art:last-child{border-bottom:0}
+    .muted{color:var(--muted)}
+  </style>
+</head>
+<body class="public">
+  <header class="header">
+    <div class="wrap">
+      <h1>Vydaná čísla</h1>
+      <nav class="nav">
+        <a href="./index.html" class="pill">O časopisu</a>
+        <a href="./cisla.html" class="pill">Vydaná čísla</a>
+        <a href="./seed.html" class="pill">DEMO data</a>
+        <a href="../index.html" class="pill">Přihlášení</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="panel">
+      <div class="panel-head"><h2>Přehled čísel</h2></div>
+      <div id="issues-empty" class="empty" style="display:none">Zatím nejsou publikovaná žádná čísla.</div>
+      <div id="issues"></div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast"></div>
+
+  <script src="../assets/js/shared.js"></script>
+  <script src="../assets/js/public.js"></script>
+</body>
+</html>

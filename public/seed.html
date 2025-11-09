@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>DEMO data | Journal</title>
+  <link rel="stylesheet" href="../assets/css/styles.css" />
+</head>
+<body class="public">
+  <header class="header">
+    <div class="wrap">
+      <h1>DEMO data</h1>
+      <nav class="nav">
+        <a href="./index.html" class="pill">O časopisu</a>
+        <a href="./cisla.html" class="pill">Vydaná čísla</a>
+        <a href="./seed.html" class="pill">DEMO data</a>
+        <a href="../index.html" class="pill">Přihlášení</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="panel">
+      <div class="panel-head"><h2>Generátor testovacích článků</h2></div>
+      <p class="muted" style="margin-bottom:10px">
+        Jedním klikem vytvoří <strong>pouze 7 DEMO článků</strong> — přesně <em>1 kus pro každý stav</em>:
+        Koncept, Čeká na kontrolu, Vráceno k úpravě, V recenzi, Přijato, Odmítnuto, Publikováno.
+        Data jsou uložena jen v <em>localStorage</em>.
+      </p>
+
+      <div class="actions">
+        <button id="seedBtn" class="btn btn-primary">Vygenerovat DEMO články (7)</button>
+        <button id="wipeBtn" class="btn btn-danger">Smazat DEMO články</button>
+      </div>
+
+      <div id="log" class="empty" style="margin-top:12px">Připraveno.</div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast"></div>
+
+  <script src="../assets/js/shared.js"></script>
+  <script>
+    (function(){
+      const { readArticles, writeArticles } = window.Shared || {};
+
+      // UTF-8 safe Base64 (funguje i s diakritikou)
+      function b64(text){
+        try {
+          const utf8 = new TextEncoder().encode(text);
+          let bin = "";
+          for (let i = 0; i < utf8.length; i++) bin += String.fromCharCode(utf8[i]);
+          return "data:text/plain;charset=utf-8;base64," + btoa(bin);
+        } catch (e) {
+          return "data:text/plain;charset=utf-8;base64," + btoa(unescape(encodeURIComponent(text)));
+        }
+      }
+
+      function nowOffset(days){ return Date.now() + days*24*60*60*1000; }
+      function id(n){ return "DEMO-" + n + "-" + Math.random().toString(36).slice(2,7); }
+      const v1 = (name) => [{ label:"v1", name, uploadedAt: nowOffset(-20), data: b64(name + " – DEMO obsah s diakritikou: ěščřžýáíé") }];
+
+      // ✅ Pouze 1 článek pro každý stav (7 položek)
+      function demoArticles(){
+        return [
+          // 1) Koncept
+          { id:id(1), title:"DEMO – Koncept: Úvod do metodologie", authorName:"Test Autor", author:"autor", contactEmail:"autor@test.cz", status:"Koncept", createdAt:nowOffset(-25), updatedAt:nowOffset(-25), versions:v1("koncept.txt") },
+
+          // 2) Čeká na kontrolu
+          { id:id(2), title:"DEMO – Čeká na kontrolu: Nástroje pro výzkum", authorName:"Test Autor", author:"autor", contactEmail:"autor@test.cz", status:"Čeká na kontrolu", createdAt:nowOffset(-22), updatedAt:nowOffset(-22), versions:v1("ceka-na-kontrolu.txt") },
+
+          // 3) Vráceno k úpravě
+          { id:id(3), title:"DEMO – Vráceno k úpravě: Analýza dat", authorName:"Test Autor", author:"autor", contactEmail:"autor@test.cz", status:"Vráceno k úpravě", createdAt:nowOffset(-21), updatedAt:nowOffset(-19),
+            screening:{checkedBy:"redaktor",checkedAt:nowOffset(-19),notes:"Doplnit kapitolu o limitech",reason:"Chybí formální náležitosti.",checks:{format:false,anonymity:true,length:true,thematic:true,attachments:true}},
+            decisions:[{type:"returned",by:"redaktor",at:nowOffset(-19),reason:"Doplnit formální náležitosti"}],
+            versions:v1("vraceno-k-uprave.txt")
+          },
+
+          // 4) V recenzi (min. 1 pending recenzent)
+          { id:id(4), title:"DEMO – V recenzi: Moderní pedagogika", authorName:"Test Autor", author:"autor", contactEmail:"autor@test.cz", status:"V recenzi", createdAt:nowOffset(-20), updatedAt:nowOffset(-10),
+            reviews:[{reviewer:"recenzent",status:"pending",dueAt:nowOffset(7)}],
+            versions:v1("v-recenzi.txt")
+          },
+
+          // 5) Přijato
+          { id:id(5), title:"DEMO – Přijato: Řízení projektů", authorName:"Test Autor", author:"autor", contactEmail:"autor@test.cz", status:"Přijato", createdAt:nowOffset(-30), updatedAt:nowOffset(-6),
+            decisions:[{type:"chief_final_accept",by:"sefredaktor",at:nowOffset(-6)}],
+            versions:v1("prijato.txt")
+          },
+
+          // 6) Odmítnuto
+          { id:id(6), title:"DEMO – Odmítnuto: Sociální sítě", authorName:"Test Autor", author:"autor", contactEmail:"autor@test.cz", status:"Odmítnuto", createdAt:nowOffset(-26), updatedAt:nowOffset(-12),
+            decisions:[{type:"chief_final_reject",by:"sefredaktor",at:nowOffset(-12),reason:"Nesplňuje odborné zaměření."}],
+            versions:v1("odmitnuto.txt")
+          },
+
+          // 7) Publikováno – 1 číslo
+          { id:id(7), title:"DEMO – Publikováno: Umělá inteligence v praxi", authorName:"Test Autor", author:"autor", contactEmail:"autor@test.cz", status:"Publikováno", createdAt:nowOffset(-40), updatedAt:nowOffset(-2),
+            publication:{issue:"2025–06", publishedAt:nowOffset(-2)},
+            versions:v1("ai-v-praxi.txt")
+          }
+        ];
+      }
+
+      function seed(){
+        const existing = (readArticles && readArticles()) || [];
+        const demos = demoArticles();
+
+        // Vyřaď duplicity podle ID — aby opakované kliknutí nepřidávalo další kusy
+        const ids = new Set(existing.map(a=>a.id));
+        const toAdd = demos.filter(a => !ids.has(a.id));
+
+        // Navíc smažeme staré DEMO články se stejným stavem, aby vždy zůstal max 1 ks/stav
+        const states = new Set(demos.map(a => a.status));
+        const filteredExisting = existing.filter(a => !( (a.id && String(a.id).startsWith("DEMO-")) && states.has(a.status) ));
+
+        const merged = filteredExisting.concat(toAdd);
+        writeArticles && writeArticles(merged);
+        return { added: toAdd.length, totalDemo: merged.filter(a => a.id && String(a.id).startsWith("DEMO-")).length };
+      }
+
+      function wipe(){
+        const existing = (readArticles && readArticles()) || [];
+        const filtered = existing.filter(a => !((a.id && String(a.id).startsWith("DEMO-")) || (a.title||"").startsWith("DEMO")));
+        writeArticles && writeArticles(filtered);
+        return existing.length - filtered.length;
+      }
+
+      function log(msg, ok=true){
+        const el = document.getElementById("log");
+        el.textContent = msg;
+        el.className = "empty" + (ok ? "" : " err");
+      }
+
+      document.getElementById("seedBtn").addEventListener("click", ()=>{
+        try{
+          const res = seed();
+          log(`Hotovo. Přidáno ${res.added} nových DEMO článků. Celkem DEMO: ${res.totalDemo}. Přejděte do „Vydaná čísla“.`, true);
+        } catch(e){
+          log("Chyba při seedování: " + e.message, false);
+        }
+      });
+
+      document.getElementById("wipeBtn").addEventListener("click", ()=>{
+        try{
+          const n = wipe();
+          log(`Smazáno ${n} DEMO článků.`, true);
+        } catch(e){
+          log("Chyba při mazání: " + e.message, false);
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
