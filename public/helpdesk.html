@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>HelpDesk | Journal</title>
+  <link rel="stylesheet" href="../assets/css/styles.css" />
+</head>
+<body class="public">
+  <header class="header">
+    <div class="wrap">
+      <h1>HelpDesk</h1>
+      <nav class="nav">
+  <a href="./index.html" class="pill">O časopisu</a>
+  <a href="./cisla.html" class="pill">Vydaná čísla</a>
+  <a href="./help.html" class="pill">Nápověda</a>
+  <a href="./seed.html" class="pill">DEMO data</a>
+  <a href="../index.html" class="pill">Přihlášení</a>
+</nav>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="panel">
+      <div class="panel-head"><h2>Odeslat dotaz</h2></div>
+
+      <form class="form" id="ticketForm">
+        <div class="field">
+          <label class="label">Jméno</label>
+          <input class="input" id="name" placeholder="Jan Novák" data-tip="Vaše jméno pro oslovení při odpovědi." required />
+        </div>
+        <div class="field">
+          <label class="label">E-mail</label>
+          <input class="input" id="email" type="email" placeholder="jan.novak@example.com" data-tip="Sem pošleme odpověď z HelpDesku." required />
+        </div>
+        <div class="field">
+          <label class="label">Předmět</label>
+          <input class="input" id="subject" placeholder="Problém s nahráním souboru" required />
+        </div>
+        <div class="field">
+          <label class="label">Zpráva</label>
+          <textarea class="input" id="message" rows="6" placeholder="Popište prosím co nejpřesněji problém…" required></textarea>
+        </div>
+
+        <div class="actions">
+          <button class="btn btn-primary" type="submit">Odeslat dotaz</button>
+          <div id="formErr" class="error"></div>
+        </div>
+      </form>
+    </section>
+
+    <section class="panel" style="margin-top:16px">
+      <div class="panel-head"><h2>Moje poslední dotazy</h2></div>
+      <div id="mineEmpty" class="empty" style="display:none">Zatím jste neposlali žádné dotazy z tohoto prohlížeče.</div>
+      <table class="table" id="mine" aria-label="Moje dotazy">
+        <thead>
+          <tr><th>Datum</th><th>Předmět</th><th>Stav</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+  </main>
+
+  <script src="../assets/js/shared.js"></script>
+  <script src="../assets/js/tips.js"></script>
+  <script>
+    (function(){
+      const LS_KEY = 'helpdesk.tickets';
+
+      function readTickets(){
+        try { return JSON.parse(localStorage.getItem(LS_KEY)||'[]'); }
+        catch { return []; }
+      }
+      function writeTickets(arr){
+        localStorage.setItem(LS_KEY, JSON.stringify(arr));
+      }
+      function fmt(ts){
+        const d=new Date(ts); const m=String(d.getMonth()+1).padStart(2,'0'); const day=String(d.getDate()).padStart(2,'0');
+        return `${d.getFullYear()}-${m}-${day} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+      }
+
+      // Submit
+      document.getElementById('ticketForm').addEventListener('submit', (e)=>{
+        e.preventDefault();
+        const name = document.getElementById('name').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const subject = document.getElementById('subject').value.trim();
+        const message = document.getElementById('message').value.trim();
+        const err = document.getElementById('formErr');
+
+        if(!name || !email || !subject || !message){
+          err.textContent = 'Vyplňte prosím všechna pole.'; return;
+        }
+
+        const t = {
+          id: 'T' + Math.random().toString(36).slice(2,9),
+          createdAt: Date.now(),
+          status: 'Otevřený',
+          user: { name, email },
+          subject,
+          messages: [
+            { by:'user', at: Date.now(), text: message }
+          ]
+        };
+
+        const all = readTickets();
+        all.push(t);
+        writeTickets(all);
+
+        e.target.reset();
+        err.textContent = '';
+        alert('Dotaz byl odeslán. Odpověď vám přijde na e-mail, zároveň je vidět v administraci.');
+        renderMine();
+      });
+
+      // "Moje dotazy" = podle e-mailu, který si pamatujeme v localStorage
+      function myEmail(){
+        try {
+          const v = document.getElementById('email').value.trim();
+          return v || (JSON.parse(localStorage.getItem('currentUser')||'null')||{}).email || '';
+        } catch { return ''; }
+      }
+
+      function renderMine(){
+        const tbody = document.querySelector('#mine tbody');
+        const mine = readTickets().filter(t => (t.user && t.user.email) === myEmail());
+        if(!mine.length){
+          document.getElementById('mineEmpty').style.display = 'block';
+          tbody.innerHTML = '';
+          return;
+        }
+        document.getElementById('mineEmpty').style.display = 'none';
+        tbody.innerHTML = mine
+          .sort((a,b)=>b.createdAt-a.createdAt)
+          .map(t=>`<tr><td>${fmt(t.createdAt)}</td><td>${t.subject}</td><td><span class="badge">${t.status}</span></td></tr>`)
+          .join('');
+      }
+
+      renderMine();
+      Tips && Tips.mount(); // kontextové tipy
+    })();
+  </script>
+</body>
+</html>
