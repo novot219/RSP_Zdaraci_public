@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Administrátor – panel</title>
+  <link rel="stylesheet" href="../assets/css/styles.css" />
+  <style>
+    /* Horní statistiky */
+    .stats{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:12px;
+      margin-bottom:12px;
+    }
+    @media (max-width:920px){
+      .stats{grid-template-columns:repeat(2,1fr);}
+    }
+    @media (max-width:520px){
+      .stats{grid-template-columns:1fr;}
+    }
+    .stat{
+      background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));
+      border:1px solid rgba(255,255,255,.06);
+      border-radius:14px;
+      padding:14px;
+    }
+    .stat .k{
+      font-size:.9rem;
+      color:var(--muted);
+    }
+    .stat .v{
+      font-size:1.6rem;
+      font-weight:900;
+    }
+
+    /* Tagy / shrnutí */
+    .filters{
+      margin: 15px auto;
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+    .tag{
+      display:inline-block;
+      border:1px solid rgba(255,255,255,.14);
+      border-radius:999px;
+      padding:4px 8px;
+      font-size:.85rem;
+    }
+
+    .searchbar{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+
+    .pill--active{
+      background:rgba(255,255,255,.12)!important;
+    }
+
+    /* ===================== NOVÉ GRAFY ===================== */
+
+    .bar{
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+
+    /* KONTEJNER GRAFU */
+    .chart-bars{
+      display:flex;
+      align-items:flex-end;
+      gap:12px;
+      height:100%;
+      margin-top:16px;
+      margin-bottom: 16px;
+      padding-bottom:40px;
+      position:relative;
+    }
+
+    .chart-bars::after{
+      content:"";
+      position:absolute;
+      left:0;
+      right:0;
+      bottom:0;
+      height:1px;
+      background:linear-gradient(90deg,rgba(148,163,184,.2),rgba(15,23,42,0));
+    }
+
+    .chart-col{
+      flex:1;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:6px;
+      min-width:0;
+    }
+
+    .chart-col__bar{
+      border-radius: 10px 10px 0 0;
+      width:100%;
+      background:linear-gradient(180deg,rgba(129,140,248,0.95),rgba(56,189,248,0.55));
+      height:var(--h,10%);
+      min-height:4px;
+      box-shadow:0 8px 22px rgba(15,23,42,.9);
+      transition:height .35s ease-out, transform .2s ease-out, box-shadow .2s ease-out;
+    }
+
+    .chart-col:hover .chart-col__bar{
+      transform:translateY(-4px);
+      box-shadow:0 14px 30px rgba(15,23,42,1);
+    }
+
+    .chart-col__value{
+      font-size:.8rem;
+      color:var(--muted);
+    }
+
+    .chart-col__label{
+      font-size:.78rem;
+      color:var(--muted);
+      white-space:nowrap;
+    }
+
+    /* Helpdesk modal */
+    #hdModal{
+      display:none;
+      position:fixed;
+      inset:0;
+      z-index:40;
+      align-items:center;
+      justify-content:center;
+    }
+    #hdModal .modal__backdrop{
+      position:absolute;
+      inset:0;
+      background:rgba(15,23,42,.85);
+      backdrop-filter:blur(8px);
+    }
+    #hdModal .modal__dialog{
+      position:relative;
+      z-index:1;
+      max-width:760px;
+      width:100%;
+      padding:16px;
+    }
+    #hdModal .box{
+      background:rgba(15,23,42,.98);
+      border-radius:18px;
+      border:1px solid rgba(148,163,184,.35);
+      box-shadow:0 24px 80px rgba(15,23,42,1);
+    }
+    .thread{
+      border:1px solid rgba(255,255,255,.1);
+      border-radius:10px;
+      padding:10px;
+      display:grid;
+      gap:8px;
+      max-height:340px;
+      overflow:auto;
+      background:rgba(15,23,42,.8);
+    }
+    .msg{
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:10px;
+      padding:8px;
+    }
+    .msg .meta{
+      font-size:.85rem;
+      color:var(--muted);
+      margin-bottom:4px;
+    }
+  </style>
+</head>
+<body data-required-role="admin">
+<header class="header">
+  <div class="wrap">
+    <h1>Administrace</h1>
+    <nav class="nav">
+      <a href="../public/index.html" class="pill">O časopisu</a>
+      <a href="../public/cisla.html" class="pill">Vydaná čísla</a>
+      <a href="../public/help.html" class="pill">Nápověda</a>
+      <a href="../public/seed.html" class="pill">DEMO data</a>
+      <a href="./admin.html" class="pill pill--active">Panel</a>
+    </nav>
+  </div>
+</header>
+
+<main class="page">
+  <!-- HLAVNÍ PŘEHLED -->
+  <section class="panel">
+    <div class="panel-head">
+      <h2>Hlavní přehled</h2>
+      <div class="actions-bar">
+        <button id="signout" class="btn btn-ghost btn-sm">Odhlásit</button>
+      </div>
+    </div>
+
+    <div class="stats" id="statsTop"></div>
+
+    <div class="grid">
+      <div>
+        <h3>Stavy článků</h3>
+        <div class="chart-bars" id="chartStatuses"></div>
+      </div>
+      <div>
+        <h3>Články podle rolí autorů</h3>
+        <div class="chart-bars" id="chartRoles"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TABULKA ČLÁNKŮ -->
+  <section class="panel" style="margin-top:16px">
+    <div class="panel-head"><h2>Globální vyhledávání, řazení a filtry</h2></div>
+    <div class="searchbar" style="margin-bottom:10px">
+      <input id="q" class="input" placeholder="Hledat napříč systémem (název, autor, klíčová slova…)" style="min-width:320px" />
+      <select id="fStatus" class="input" style="max-width:220px">
+        <option value="">Všechny stavy</option>
+        <option>Koncept</option>
+        <option>Čeká na kontrolu</option>
+        <option>Vráceno k úpravě</option>
+        <option>V recenzi</option>
+        <option>Přijato</option>
+        <option>Odmítnuto</option>
+        <option>Publikováno</option>
+      </select>
+      <select id="fRole" class="input" style="max-width:220px">
+        <option value="">Všechny role autora</option>
+        <option value="autor">autor</option>
+        <option value="redaktor">redaktor</option>
+        <option value="recenzent">recenzent</option>
+        <option value="sefredaktor">sefredaktor</option>
+      </select>
+      <button id="clear" class="btn btn-ghost">Vyčistit</button>
+    </div>
+
+    <div class="filters" id="summaryTags"></div>
+
+    <table class="table" id="tbl">
+      <thead>
+      <tr>
+        <th data-sort="title">Název</th>
+        <th data-sort="authorName">Autor</th>
+        <th data-sort="status">Stav</th>
+        <th data-sort="createdAt">Vytvořeno</th>
+        <th>Akce</th>
+      </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <div class="panel-head" style="margin-top:10px">
+      <div class="tag" id="sumCount">Celkem: 0</div>
+      <div class="tag" id="sumPublished">Publikováno: 0</div>
+      <div class="tag" id="sumPending">V recenzi: 0</div>
+    </div>
+  </section>
+
+  <!-- HELPDESK -->
+  <section class="panel" style="margin-top:16px">
+    <div class="panel-head">
+      <h2>HelpDesk – dotazy uživatelů</h2>
+      <div class="actions-bar">
+        <a href="../public/helpdesk.html" class="btn btn-ghost btn-sm">Otevřít formulář pro uživatele</a>
+      </div>
+    </div>
+
+    <div id="hdEmpty" class="empty" style="display:none">Žádné dotazy zatím nepřišly.</div>
+    <table class="table" id="hd">
+      <thead>
+      <tr>
+        <th>Datum</th>
+        <th>Uživatel</th>
+        <th>E-mail</th>
+        <th>Předmět</th>
+        <th>Stav</th>
+        <th>Akce</th>
+      </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </section>
+</main>
+
+<!-- MODAL HELPDESK -->
+<div class="modal" id="hdModal" aria-hidden="true">
+  <div class="modal__backdrop" id="modalBackdrop"></div>
+  <div class="modal__dialog">
+    <div class="box">
+      <div class="panel-head">
+        <h2 id="ticketTitle">Detail dotazu</h2>
+      </div>
+      <div class="thread" id="thread"></div>
+      <div style="margin-top:10px">
+        <label for="reply" class="label">Odpověď</label>
+        <textarea id="reply" class="input" rows="4" placeholder="Napište odpověď uživateli…"></textarea>
+      </div>
+      <div class="bar" style="margin-top:16px;justify-content:flex-end;">
+        <button class="btn btn-warning" id="closeTicket">Uzavřít</button>
+        <button class="btn btn-primary" id="sendReply">Odeslat odpověď</button>
+        <button class="btn btn-ghost" id="modalClose">Zavřít</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="../assets/js/shared.js"></script>
+<script src="../assets/js/tips.js"></script>
+<script src="../assets/js/admin.js"></script>
+</body>
+</html>

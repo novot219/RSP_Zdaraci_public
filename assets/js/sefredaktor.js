@@ -218,7 +218,6 @@
       reason: reason || (newStatus === "Přijato" ? "Článek byl přijat k publikaci." : "N/A")
     });
 
-    // (US-5) Informování autora
     let notifyMsg = "";
     if (newStatus === "Přijato") {
       notifyMsg = `Váš článek "${art.title}" byl přijat k publikaci. ${reason}`;

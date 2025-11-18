@@ -11,69 +11,107 @@
     <div class="wrap">
       <h1>Časopis – veřejná část</h1>
       <nav class="nav">
-  <a href="./index.html" class="pill">O časopisu</a>
-  <a href="./cisla.html" class="pill">Vydaná čísla</a>
-  <a href="./help.html" class="pill">Nápověda</a>
-  <a href="./seed.html" class="pill">DEMO data</a>
-  <a href="../index.html" class="pill">Přihlášení</a>
-</nav>
+        <a href="./index.html" class="pill pill--active">O časopisu</a>
+        <a href="./cisla.html" class="pill">Vydaná čísla</a>
+        <a href="./help.html" class="pill">Nápověda</a>
+        <a href="./seed.html" class="pill">DEMO data</a>
+        <a href="../index.html" class="pill">Přihlášení</a>
+      </nav>
     </div>
   </header>
 
   <main class="page">
     <!-- HERO -->
-    <section class="panel hero-landing">
-      <div class="hero-head">
+    <section class="panel hero hero-landing reveal">
+      <div class="hero-body">
+        <p class="hero-eyebrow">Akademický recenzovaný časopis</p>
         <h2 class="hero-title" id="about-name">Journal of Modern Studies</h2>
         <p class="hero-subtitle" id="about-desc">
-          Akademický recenzovaný časopis zaměřený na moderní trendy a aplikovaný výzkum. Publikujeme dvakrát ročně.
+          Zaměřený na moderní trendy a aplikovaný výzkum. Publikujeme dvakrát ročně
+          a klademe důraz na kvalitní recenzní řízení.
         </p>
-        <div class="hero-actions">
-          <a href="./cisla.html" class="btn btn-primary">Prohlížet vydaná čísla</a>
-          <a href="../index.html" class="btn btn-ghost">Chci publikovat</a>
+
+        <div class="hero-meta">
+          <span class="badge" data-status="published">2× ročně</span>
+          <span class="badge" data-status="review">Double-blind peer review</span>
         </div>
+
+        <div class="hero-actions">
+          <a href="./cisla.html" class="btn btn-primary">
+            Prohlížet vydaná čísla
+          </a>
+          <a href="../index.html" class="btn btn-ghost">
+            Chci publikovat
+          </a>
+        </div>
+      </div>
+
+      <div class="hero-orbit">
+        <span class="hero-orbit-dot hero-orbit-dot--primary"></span>
+        <span class="hero-orbit-dot hero-orbit-dot--soft"></span>
       </div>
     </section>
 
     <!-- TILES 2×2 -->
     <section class="tiles">
-      <article class="tile reveal" data-tilt>
+      <article class="tile-card reveal" data-tilt>
         <div class="tile-head">
-          <div class="tile-icon">🎯</div><h3>Zaměření</h3>
+          <div class="tile-icon">🎯</div>
+          <h3>Zaměření</h3>
         </div>
-        <p class="muted" id="about-focus">Informační technologie, pedagogika, management, společenské vědy. Přijímáme původní články i přehledové studie.</p>
+        <p class="muted" id="about-focus">
+          Informační technologie, pedagogika, management a společenské vědy.
+          Přijímáme původní články i přehledové studie.
+        </p>
         <ul class="chiplist">
-          <li class="chip">IT</li><li class="chip">Pedagogika</li><li class="chip">Management</li><li class="chip">Společenské vědy</li>
+          <li class="chip">IT</li>
+          <li class="chip">Pedagogika</li>
+          <li class="chip">Management</li>
+          <li class="chip">Společenské vědy</li>
         </ul>
       </article>
 
-      <article class="tile reveal" data-tilt>
+      <article class="tile-card reveal" data-tilt>
         <div class="tile-head">
-          <div class="tile-icon">🏛️</div><h3>Vydavatel &amp; kontakt</h3>
+          <div class="tile-icon">🏛️</div>
+          <h3>Vydavatel &amp; kontakt</h3>
         </div>
-        <p class="muted" id="about-publisher">Fiktivní univerzita • Katedra moderních studií</p>
-        <p class="muted">Mail: <a id="about-email" href="mailto:redakce@journal.test">redakce@journal.test</a></p>
+        <p class="muted" id="about-publisher">
+          Fiktivní univerzita • Katedra moderních studií
+        </p>
+        <p class="muted">
+          Mail:
+          <a id="about-email" href="mailto:redakce@journal.test">
+            redakce@journal.test
+          </a>
+        </p>
       </article>
 
-      <article class="tile reveal" data-tilt>
+      <article class="tile-card reveal" data-tilt>
         <div class="tile-head">
-          <div class="tile-icon">👥</div><h3>Redakční rada</h3>
+          <div class="tile-icon">👥</div>
+          <h3>Redakční rada</h3>
         </div>
-        <ul class="muted" id="about-board" style="margin-left:16px">
+        <ul class="muted" id="about-board">
           <li>Šéfredaktor: sefredaktor</li>
           <li>Redaktoři: redaktor</li>
           <li>Recenzenti: recenzent, recenzent2</li>
         </ul>
       </article>
 
-      <article class="tile reveal" data-tilt>
+      <article class="tile-card reveal" data-tilt>
         <div class="tile-head">
-          <div class="tile-icon">✍️</div><h3>Pokyny pro autory</h3>
+          <div class="tile-icon">✍️</div>
+          <h3>Pokyny pro autory</h3>
         </div>
-        <p class="muted" id="about-guidelines">Max. 20 stran, anonymní posouzení, soubory PDF/DOCX. Citace dle APA.</p>
+        <p class="muted" id="about-guidelines">
+          Max. 20 stran, anonymní posouzení, soubory PDF/DOCX. Citace dle APA.
+        </p>
         <div class="tile-cta">
           <a href="../index.html" class="btn btn-primary btn-sm">Začít psát</a>
-          <a href="./cisla.html" class="btn btn-ghost btn-sm">Podívat se na ukázky</a>
+          <a href="./cisla.html" class="btn btn-ghost btn-sm">
+            Podívat se na ukázky
+          </a>
         </div>
       </article>
     </section>

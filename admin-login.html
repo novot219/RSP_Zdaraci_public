@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Administrátor – přihlášení</title>
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body class="landing">
+  <header class="header">
+    <div class="wrap">
+      <h1>Administrace</h1>
+      <nav class="nav">
+        <a href="public/index.html" class="pill">O časopisu</a>
+        <a href="public/cisla.html" class="pill">Vydaná čísla</a>
+        <a href="public/help.html" class="pill">Nápověda</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="card">
+      <div class="title">Přihlášení administrátora</div>
+      <form class="form" id="adminLogin">
+        <div class="field">
+          <label class="label">Uživatelské jméno</label>
+          <input class="input" type="text" id="user" placeholder="admin" required />
+        </div>
+        <div class="field">
+          <label class="label">Heslo</label>
+          <input class="input" type="password" id="pwd" placeholder="heslo" required />
+        </div>
+        <div class="actions">
+          <button class="btn btn-primary" type="submit">Přihlásit</button>
+        </div>
+        <div class="error" id="err"></div>
+      </form>
+    </div>
+  </main>
+
+  <script>
+    (function(){
+      const form = document.getElementById('adminLogin');
+      const err  = document.getElementById('err');
+
+      form.addEventListener('submit', (e)=>{
+        e.preventDefault();
+        const u = document.getElementById('user').value.trim();
+        const p = document.getElementById('pwd').value;
+
+        if(u !== 'admin' || p !== 'heslo'){
+          err.textContent = 'Neplatné přihlašovací údaje.'; return;
+        }
+        const user = { id:'admin', name:'Administrátor', email:'admin@journal.test', role:'admin', loggedAt: Date.now() };
+        localStorage.setItem('currentUser', JSON.stringify(user));
+        location.href = 'roles/admin.html';
+      });
+    })();
+  </script>
+</body>
+</html>

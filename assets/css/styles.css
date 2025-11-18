@@ -146,6 +146,7 @@ a.pill.pill--active{ border-color: rgba(255,255,255,.2); background: rgba(255,25
 .label{ font-size:.95rem; color: var(--muted); letter-spacing:.2px }
 
 .input, select.input, textarea.input{
+  margin: 5px 0;
   width:100%;
   padding:12px 14px;
   border-radius: var(--radius-md);
@@ -160,11 +161,12 @@ a.pill.pill--active{ border-color: rgba(255,255,255,.2); background: rgba(255,25
 .input:disabled{ background: rgba(255,255,255,.05); opacity:.7 }
 
 .form{ display:grid; gap:16px }
-.actions{ display:flex; gap:10px; flex-wrap: wrap }
+.actions{ display:flex; gap:10px; flex-wrap: wrap; margin-top: 15px; }
 .error{ min-height:22px; color:#f87171; font-size:.95rem }
 
 /* ===== Buttons ===== */
 .btn{
+  margin: 5px 0;
   appearance:none; border:0; cursor:pointer;
   border-radius: var(--radius-md);
   padding:12px 14px;
@@ -266,6 +268,15 @@ a.pill.pill--active{ border-color: rgba(255,255,255,.2); background: rgba(255,25
 }
 .toast.err{ background:#ef4444; box-shadow:0 10px 24px rgba(239,68,68,.35) }
 
+.admin-container {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+
+
+
 /* ===== Review components ===== */
 .reviews-list-editor .review-item{
   border:1px solid rgba(255,255,255,.1);
@@ -293,6 +304,213 @@ a.pill.pill--active{ border-color: rgba(255,255,255,.2); background: rgba(255,25
 .hero .hero-body p{ color:var(--muted); margin-bottom:12px }
 .hero .hero-actions{ display:flex; gap:8px; flex-wrap:wrap }
 
+/* ========= Public journal landing – hero ========= */
+
+.hero-landing{
+  position: relative;
+  overflow: hidden;
+  padding: 26px 24px 22px;
+}
+
+.hero-landing::before{
+  content:"";
+  position:absolute;
+  inset:-40%;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(99,102,241,.25) 0, transparent 55%),
+    radial-gradient(circle at 100% 0%, rgba(14,165,233,.18) 0, transparent 55%);
+  opacity:.75;
+  pointer-events:none;
+  mix-blend-mode:screen;
+}
+
+.hero-landing::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius: inherit;
+  border:1px solid rgba(255,255,255,.12);
+  pointer-events:none;
+}
+
+.hero-body{
+  position: relative;
+  z-index: 1;
+  max-width: 640px;
+}
+
+.hero-eyebrow{
+  font-size:.85rem;
+  text-transform:uppercase;
+  letter-spacing:.18em;
+  color: var(--muted);
+  margin-bottom:4px;
+}
+
+.hero-title{
+  font-size:1.55rem;
+  font-weight:800;
+  letter-spacing:.03em;
+  margin-bottom:6px;
+}
+
+.hero-subtitle{
+  color: var(--muted);
+  max-width: 56ch;
+  margin-bottom:12px;
+}
+
+.hero-meta{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-bottom:14px;
+}
+
+.hero-actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+}
+
+/* orbitující drobné body pro wow efekt */
+.hero-orbit{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+}
+
+.hero-orbit-dot{
+  position:absolute;
+  width:10px; height:10px;
+  border-radius:999px;
+  background:rgba(148,163,184,.5);
+  filter: blur(1px);
+  animation: hero-orbit 14s linear infinite;
+}
+
+.hero-orbit-dot--primary{
+  top:14%; right:8%;
+  background: rgba(129,140,248,.9);
+}
+
+.hero-orbit-dot--soft{
+  bottom:8%; left:70%;
+  width:7px; height:7px;
+  background: rgba(56,189,248,.8);
+  animation-duration: 18s;
+}
+
+@keyframes hero-orbit{
+  0%   { transform: translate3d(0,0,0); opacity:.4 }
+  25%  { opacity:.9 }
+  50%  { transform: translate3d(-18px,12px,0); opacity:.6 }
+  75%  { opacity:.9 }
+  100% { transform: translate3d(0,0,0); opacity:.4 }
+}
+
+/* ========= Journal tiles ========= */
+
+.tiles{
+  display:grid;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  gap:16px;
+  margin-top:18px;
+}
+
+@media (max-width: 780px){
+  .tiles{ grid-template-columns:1fr }
+}
+
+/* navazuje na existující .tile-card */
+.tile-head{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:10px;
+}
+
+.tile-icon{
+  width:36px; height:36px;
+  border-radius:999px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background: rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.14);
+  font-size:1.1rem;
+  flex-shrink:0;
+}
+
+.tile-head h3{
+  font-size:1.02rem;
+  font-weight:800;
+}
+
+.tile-cta{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:12px;
+}
+
+/* chips pro obory */
+.chiplist{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+  margin-top:12px;
+  padding:0;
+  list-style:none;
+}
+
+.chip{
+  font-size:.8rem;
+  padding:4px 10px;
+  border-radius:999px;
+  border:1px solid rgba(148,163,184,.4);
+  background: rgba(15,23,42,.95);
+  color:#e5e7eb;
+}
+
+/* interaktivní „tilt“ efekt pouze pomocí CSS */
+.tile-card[data-tilt]{
+  transform-origin: center;
+  will-change: transform, box-shadow;
+}
+
+.tile-card[data-tilt]:hover{
+  transform: translateY(-4px) rotateX(1deg) rotateY(-1deg);
+  box-shadow: 0 22px 55px rgba(0,0,0,.55);
+}
+
+/* ========= Reveal animace pro vstup na scroll ========= */
+
+.reveal{
+  opacity:0;
+  transform: translateY(10px) scale(.98);
+}
+
+.reveal.show{
+  opacity:1;
+  transform: translateY(0) scale(1);
+  transition:
+    opacity .4s ease-out,
+    transform .4s ease-out;
+}
+
+/* drobné zpoždění mezi dlaždicemi */
+.tiles .reveal.show:nth-child(1){ transition-delay:.02s }
+.tiles .reveal.show:nth-child(2){ transition-delay:.08s }
+.tiles .reveal.show:nth-child(3){ transition-delay:.14s }
+.tiles .reveal.show:nth-child(4){ transition-delay:.2s }
+
+/* na menších displejích trochu povolit paddingy */
+@media (max-width: 520px){
+  .hero-landing{ padding:20px 18px 18px }
+}
+
+
 .tiles{
   display:grid; grid-template-columns: repeat(2, minmax(0,1fr));
   gap:14px; margin-top:12px
@@ -317,6 +535,11 @@ a.pill.pill--active{ border-color: rgba(255,255,255,.2); background: rgba(255,25
 .tile-card ul{ margin-left:18px; display:grid; gap:6px }
 
 /* ===== FAQ ===== */
+.faq{
+  margin-top: 50px;
+
+
+}
 .faq details{
   background: rgba(255,255,255,.03);
   border:1px solid rgba(255,255,255,.08);

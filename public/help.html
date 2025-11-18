@@ -22,87 +22,133 @@
 
   <main class="page">
     <!-- HERO -->
-    <section class="panel hero">
+    <section class="panel hero hero-landing reveal">
       <div class="hero-body">
-        <h2>Jak používat Journal</h2>
-        <p>Krátký tahák pro autory, recenzenty, redaktory i čtenáře. Pokud něco nenajdete, napište nám přes HelpDesk.</p>
-        <div class="hero-actions">
-          <a href="./helpdesk.html" class="btn btn-primary">Odeslat dotaz na HelpDesk</a>
-          <a href="./cisla.html" class="btn btn-ghost">Přejít na vydaná čísla</a>
+        <p class="hero-eyebrow">První kroky v systému</p>
+        <h2 class="hero-title">Jak používat Journal</h2>
+        <p class="hero-subtitle">
+          Krátký tahák pro autory, recenzenty, redaktory i čtenáře.
+          Když si nebudete jistí, odešlete dotaz přes HelpDesk – rádi poradíme.
+        </p>
+
+        <div class="hero-meta">
+          <span class="badge" data-status="published">Autoři</span>
+          <span class="badge" data-status="review">Recenzenti</span>
+          <span class="badge" data-status="draft">Redakce &amp; čtenáři</span>
         </div>
+
+        <div class="hero-actions">
+          <a href="./helpdesk.html" class="btn btn-primary">
+            Odeslat dotaz na HelpDesk
+          </a>
+          <a href="./cisla.html" class="btn btn-ghost">
+            Přejít na vydaná čísla
+          </a>
+        </div>
+      </div>
+
+      <div class="hero-orbit">
+        <span class="hero-orbit-dot hero-orbit-dot--primary"></span>
+        <span class="hero-orbit-dot hero-orbit-dot--soft"></span>
       </div>
     </section>
 
-    <!-- Tiles 2×2 -->
+    <!-- Tiles 2×2 – hlavní scénáře -->
     <section class="tiles">
-      <article class="tile-card">
-        <div class="tile-icon-circle">🔐</div>
-        <h3>Registrace &amp; přihlášení</h3>
-        <ul>
-          <li>Na hlavní stránce klikněte <strong>Přihlášení</strong>.</li>
-          <li>Po registraci získáte roli <strong>autor</strong> a přístup do panelu.</li>
+      <article class="tile-card reveal" data-tilt>
+        <div class="tile-head">
+          <div class="tile-icon">🔐</div>
+          <h3>Registrace &amp; přihlášení</h3>
+        </div>
+        <ul class="muted">
+          <li>Na horní liště klikněte na <strong>Přihlášení</strong>.</li>
+          <li>Vytvořte si účet nebo se přihlaste stávajícím.</li>
+          <li>Po registraci získáte roli <strong>autor</strong> a přístup do svého panelu.</li>
         </ul>
       </article>
 
-      <article class="tile-card">
-        <div class="tile-icon-circle">📄</div>
-        <h3>Odeslání článku</h3>
-        <ul>
-          <li>V autorově panelu zvolte <strong>Nový článek</strong>.</li>
+      <article class="tile-card reveal" data-tilt>
+        <div class="tile-head">
+          <div class="tile-icon">📄</div>
+          <h3>Odeslání článku</h3>
+        </div>
+        <ul class="muted">
+          <li>V panelu autora zvolte <strong>Nový článek</strong>.</li>
           <li>Vyplňte název, abstrakt a nahrajte soubor (PDF/DOCX).</li>
           <li>Po odeslání se stav změní na <em>Čeká na kontrolu</em>.</li>
         </ul>
       </article>
 
-      <article class="tile-card">
-        <div class="tile-icon-circle">🔍</div>
-        <h3>Recenzní řízení</h3>
-        <ul>
-          <li>Redaktor provede formální kontrolu (případně vrátí k úpravám).</li>
-          <li>Recenzenti pošlou posudky ve stavu <em>V recenzi</em>.</li>
+      <article class="tile-card reveal" data-tilt>
+        <div class="tile-head">
+          <div class="tile-icon">🔍</div>
+          <h3>Recenzní řízení</h3>
+        </div>
+        <ul class="muted">
+          <li>Redaktor provede formální kontrolu a může článek vrátit k úpravám.</li>
+          <li>Recenzenti připraví posudky ve stavu <em>V recenzi</em>.</li>
           <li>Šéfredaktor rozhodne: <em>Přijato</em> / <em>Odmítnuto</em> / <em>Vráceno k úpravě</em>.</li>
         </ul>
       </article>
 
-      <article class="tile-card">
-        <div class="tile-icon-circle">📚</div>
-        <h3>Publikace &amp; čtení</h3>
-        <ul>
-          <li>Publikované články najdete v <a href="./cisla.html"><strong>Vydaných číslech</strong></a>.</li>
-          <li>U každého článku lze stáhnout poslední verzi (PDF).</li>
+      <article class="tile-card reveal" data-tilt>
+        <div class="tile-head">
+          <div class="tile-icon">📚</div>
+          <h3>Publikace &amp; čtení</h3>
+        </div>
+        <ul class="muted">
+          <li>Publikované články najdete ve <a href="./cisla.html"><strong>Vydaných číslech</strong></a>.</li>
+          <li>U každého článku je dostupná ke stažení aktuální verze (PDF).</li>
         </ul>
       </article>
     </section>
 
     <!-- FAQ -->
-    <section class="panel faq">
-      <div class="panel-head"><h2>FAQ</h2></div>
+    <section class="panel faq reveal">
+      <div class="panel-head">
+        <h2>FAQ</h2>
+      </div>
 
       <details>
         <summary>Jak dlouho trvá recenze?</summary>
-        <p>Obvykle 2–4 týdny dle vytížení recenzentů. Stav vždy vidíte ve svém panelu.</p>
+        <p>Obvykle 2–4 týdny podle vytížení recenzentů. Aktuální stav vždy vidíte ve svém panelu.</p>
       </details>
 
       <details>
         <summary>Co když mi nejde nahrát soubor?</summary>
-        <p>Zkontrolujte typ (PDF/DOCX) a velikost. Když problém trvá, napište přes <a href="./helpdesk.html">HelpDesk</a>.</p>
+        <p>
+          Zkontrolujte typ (PDF/DOCX) a velikost souboru.
+          Pokud problém přetrvá, napište nám přes
+          <a href="./helpdesk.html">HelpDesk</a>.
+        </p>
       </details>
 
       <details>
         <summary>Mohu upravit článek po odeslání?</summary>
-        <p>Ano, pokud vám jej redakce vrátí k úpravě. V jiných stavech kontaktujte redakci přes HelpDesk.</p>
+        <p>
+          Ano, pokud vám jej redakce vrátí k úpravě.
+          V ostatních stavech kontaktujte redakci přes HelpDesk.
+        </p>
       </details>
     </section>
 
     <!-- CTA -->
-    <section class="panel" style="margin-top:12px">
-      <div class="panel-head"><h2>Potřebujete pomoc?</h2></div>
-      <p class="muted">Odeslání dotazu je nejrychlejší způsob, jak problém vyřešit. Odpovídáme co nejdříve.</p>
+    <section class="panel reveal" style="margin-top:12px">
+      <div class="panel-head">
+        <h2>Potřebujete pomoc?</h2>
+      </div>
+      <p class="muted">
+        Odeslání dotazu je nejrychlejší způsob, jak problém vyřešit.
+        Odpovídáme co nejdříve.
+      </p>
       <div class="actions">
         <a href="./helpdesk.html" class="btn btn-primary">Odeslat dotaz</a>
         <a href="../index.html" class="btn btn-ghost">Přihlásit se</a>
       </div>
     </section>
   </main>
+
+  <script src="../assets/js/shared.js"></script>
+  <script src="../assets/js/public.js"></script>
 </body>
 </html>

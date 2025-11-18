@@ -45,7 +45,6 @@
     (function(){
       const { readArticles, writeArticles } = window.Shared || {};
 
-      // UTF-8 safe Base64 (funguje i s diakritikou)
       function b64(text){
         try {
           const utf8 = new TextEncoder().encode(text);
@@ -61,7 +60,6 @@
       function id(n){ return "DEMO-" + n + "-" + Math.random().toString(36).slice(2,7); }
       const v1 = (name) => [{ label:"v1", name, uploadedAt: nowOffset(-20), data: b64(name + " – DEMO obsah s diakritikou: ěščřžýáíé") }];
 
-      // ✅ Pouze 1 článek pro každý stav (7 položek)
       function demoArticles(){
         return [
           // 1) Koncept
@@ -107,11 +105,9 @@
         const existing = (readArticles && readArticles()) || [];
         const demos = demoArticles();
 
-        // Vyřaď duplicity podle ID — aby opakované kliknutí nepřidávalo další kusy
         const ids = new Set(existing.map(a=>a.id));
         const toAdd = demos.filter(a => !ids.has(a.id));
 
-        // Navíc smažeme staré DEMO články se stejným stavem, aby vždy zůstal max 1 ks/stav
         const states = new Set(demos.map(a => a.status));
         const filteredExisting = existing.filter(a => !( (a.id && String(a.id).startsWith("DEMO-")) && states.has(a.status) ));
 

@@ -70,7 +70,6 @@ window.Shared = (function () {
       : null;
   }
 
-  // --- Recenzenti (jednoduchá správa v localStorage) ---
   function readReviewers() {
     try {
       const raw = localStorage.getItem("reviewers");
@@ -94,7 +93,6 @@ window.Shared = (function () {
     localStorage.setItem("reviewers", JSON.stringify(list || []));
   }
 
-  // --- Notifikace (ukládáme k článku, in-app) ---
   function pushNotification(art, toUser, message, meta) {
     if (!Array.isArray(art.notifications)) art.notifications = [];
     art.notifications.push({
