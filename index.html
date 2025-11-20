@@ -1,56 +1,292 @@
 <!DOCTYPE html>
 <html lang="cs">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Přihlášení</title>
-<link rel="stylesheet" href="assets/css/styles.css">
-</head>
-<body>
-	<!DOCTYPE html>
-<html lang="cs">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Časopis – přihlášení</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Journal – školní časopis</title>
   <link rel="stylesheet" href="assets/css/styles.css" />
+
+  <!-- Landing-only styling -->
+  <style>
+    :root{
+      --mouse-x: 0;
+      --mouse-y: 0;
+    }
+
+    .landing-main{
+      max-width: 1200px;
+      margin: 30px auto 40px;
+      padding: 0 18px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .landing-grid{
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 0.9fr);
+      gap: 24px;
+      align-items: stretch;
+    }
+
+    @media (max-width: 980px){
+      .landing-grid{
+        grid-template-columns: minmax(0,1fr);
+      }
+    }
+
+    .landing-hero.panel{
+      position: relative;
+      overflow: hidden;
+      min-height: 260px;
+    }
+
+    .landing-hero h2{
+      font-size: clamp(1.5rem, 2.3vw, 2.1rem);
+      font-weight: 900;
+      letter-spacing: .3px;
+      background: linear-gradient(90deg,#fff 0%,#c7d2fe 50%,#a5b4fc 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 8px;
+    }
+
+    .landing-hero p{
+      color: var(--muted);
+      max-width: 60ch;
+      margin-bottom: 14px;
+    }
+
+    .landing-hero .chips{
+      display:flex;
+      flex-wrap:wrap;
+      gap:6px;
+      margin-bottom:16px;
+    }
+
+    .landing-hero .chip{
+      padding:4px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.16);
+      background:rgba(255,255,255,.06);
+      font-size:.8rem;
+      letter-spacing:.2px;
+    }
+
+    .landing-hero .hero-actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+
+    /* orbit background reagující na kurzor */
+    .landing-orbit{
+      position:absolute;
+      width:320px;
+      height:320px;
+      border-radius:50%;
+      background: radial-gradient(circle at 30% 30%, rgba(99,102,241,.55), transparent 60%),
+                  radial-gradient(circle at 70% 70%, rgba(16,185,129,.4), transparent 65%);
+      opacity:.45;
+      filter: blur(2px);
+      right:-80px;
+      top:-80px;
+      transform: translate3d(
+        calc(var(--mouse-x) * 26px),
+        calc(var(--mouse-y) * 18px),
+        0
+      );
+      transition: transform .25s ease-out;
+      pointer-events:none;
+      mix-blend-mode: screen;
+    }
+
+    .landing-login{
+      align-self: stretch;
+      display:flex;
+      align-items: stretch;
+    }
+
+    .landing-login .card{
+      width:100%;
+      height:100%;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+    }
+
+    .landing-login .card .title{
+      margin-bottom: 10px;
+    }
+
+    .landing-login .hint{
+      margin-top:10px;
+      font-size:.9rem;
+      color:var(--muted);
+    }
+
+    .landing-login .hint a{
+      text-decoration:underline;
+    }
+
+    .landing-below{
+      margin-top: 20px;
+      display:grid;
+      gap:16px;
+    }
+
+    .landing-below .panel p + p{
+      margin-top:8px;
+    }
+
+    body.landing{
+      min-height:100vh;
+    }
+  </style>
 </head>
-<body class="landing">   <!-- ⬅⬅⬅ přidáno -->
-	<header class="header">
-		<div class="wrap">
-		<h1>Časopis</h1>
-		<nav class="nav">
-			<a href="public/index.html" class="pill">O časopisu</a>
-			<a href="public/cisla.html" class="pill">Vydaná čísla</a>
-			<a href="public/seed.html" class="pill">DEMO data</a>
-		</nav>
+<body class="landing">
+  <!-- NAVBAR -->
+  <header class="header">
+    <div class="wrap">
+      <h1>Journal</h1>
+      <nav class="nav">
+        <a href="public/index.html" class="pill">O časopisu</a>
+        <a href="public/cisla.html" class="pill">Vydaná čísla</a>
+        <a href="public/help.html" class="pill">Nápověda</a>
+        <a href="public/seed.html" class="pill">DEMO data</a>
+        <a href="#login" class="pill">Přihlášení</a>
+      </nav>
+    </div>
+  </header>
 
-		</div>
-	</header>
-<div class="container">
-	<div class="card">
-		<h1 class="title">Přihlášení do systému</h1>
-		<form id="loginForm" class="form" novalidate>
-			<div class="field">
-				<label for="username" class="label">Uživatelské jméno</label>
-				<input id="username" name="username" type="text" autocomplete="username" class="input" placeholder="např. autor" required>
-			</div>
-			<div class="field">
-				<label for="password" class="label">Heslo</label>
-				<input id="password" name="password" type="password" autocomplete="current-password" class="input" placeholder="••••••••" required>
-			</div>
-			<div class="actions">
-				<button id="loginBtn" type="submit" class="btn btn-primary">Přihlásit se</button>
-				<p class="muted" style="margin-top:8px">
-					<a href="admin-login.html">Přihlásit jako administrátor</a>
-				</p>
-			</div>
-			<p id="error" class="error" aria-live="polite"></p>
-		</form>
-	</div>
-	
+  <!-- HLAVNÍ OBSAH -->
+  <main class="landing-main">
+    <section class="landing-grid">
+      <!-- LEFT: Hero + info pro čtenáře -->
+      <section class="panel landing-hero">
+        <div class="landing-orbit"></div>
 
-</div>
-<script src="assets/js/auth.js"></script>
+        <h2>Školní odborný časopis ve webové podobě</h2>
+        <p>
+          Čtěte publikované články, sledujte recenzní řízení a spravujte celý
+          redakční proces na jednom místě. Bez přihlášení máte přístup k
+          vydaným číslům a základním informacím o časopisu.
+        </p>
+
+        <div class="chips">
+          	<span class="chip">👤 Autor</span>
+			<span class="chip">📝 Redaktor</span>
+			<span class="chip">👑 Šéfredaktor</span>
+			<span class="chip">🔍 Recenzent</span>
+			<span class="chip">📖 Čtenář</span>
+			<span class="chip">⚙️ Administrátor</span>
+        </div>
+
+        <div class="hero-actions">
+          <a href="public/cisla.html" class="btn btn-primary">Prohlížet vydaná čísla</a>
+          <a href="public/index.html" class="btn btn-ghost">O časopisu a redakci</a>
+        </div>
+      </section>
+
+      <!-- RIGHT: Login card -->
+      <section class="landing-login">
+        <div class="card" id="login">
+          <div>
+            <div class="title">Přihlášení do systému</div>
+            <form class="form" id="loginForm">
+              <div class="field">
+                <label class="label" for="username">Uživatelské jméno</label>
+                <input
+                  class="input"
+                  type="text"
+                  id="username"
+                  name="username"
+                  placeholder="autor / redaktor / recenzent / sefredaktor"
+                  autocomplete="username"
+                  required
+                />
+              </div>
+              <div class="field">
+                <label class="label" for="password">Heslo</label>
+                <input
+                  class="input"
+                  type="password"
+                  id="password"
+                  name="password"
+                  placeholder="heslo"
+                  autocomplete="current-password"
+                  required
+                />
+              </div>
+
+              <div class="actions">
+                <button class="btn btn-primary" id="loginBtn" type="submit">
+                  Přihlásit
+                </button>
+              </div>
+              <div class="error" id="error"></div>
+            </form>
+
+            <p class="hint">
+              <a href="admin-login.html">Přihlásit jako administrátor</a>
+            </p>
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <!-- Oznámení + stručný přehled -->
+    <section class="landing-below">
+      <section class="panel">
+        <div class="panel-head">
+          <h2>Oznámení o školním projektu</h2>
+        </div>
+        <p class="muted">
+          Tato aplikace vznikla jako semestrální projekt v rámci výuky. Slouží
+          jako modelový redakční systém pro správu odborného časopisu –
+          odesílání článků, recenzní řízení, rozhodování redakce a publikaci
+          jednotlivých čísel.
+        </p>
+        <p class="muted">
+          Veškerá data (uživatelé, články, posudky) jsou testovací a slouží
+          pouze pro demonstraci funkcí systému v rámci školní výuky.
+        </p>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h2>Co uvidí neregistrovaný čtenář?</h2>
+        </div>
+        <p class="muted">
+          Bez přihlášení můžete listovat vydanými čísly, číst publikované
+          články a podívat se na složení redakční rady. Přihlášení je potřeba
+          pouze pro autory, recenzenty a členy redakce.
+        </p>
+      </section>
+    </section>
+  </main>
+
+  <script src="assets/js/shared.js"></script>
+  <script src="assets/js/auth.js"></script>
+
+  <!-- lehká parallax animace reagující na kurzor -->
+  <script>
+    (function(){
+      const root = document.documentElement;
+      let ticking = false;
+
+      window.addEventListener('pointermove', (e) => {
+        if (ticking) return;
+        ticking = true;
+        window.requestAnimationFrame(() => {
+          const nx = (e.clientX / window.innerWidth) - 0.5; // -0.5..0.5
+          const ny = (e.clientY / window.innerHeight) - 0.5;
+          root.style.setProperty('--mouse-x', (nx * 2).toFixed(3)); // -1..1
+          root.style.setProperty('--mouse-y', (ny * 2).toFixed(3));
+          ticking = false;
+        });
+      });
+    })();
+  </script>
 </body>
 </html>
