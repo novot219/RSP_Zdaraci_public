@@ -1,0 +1,276 @@
+Dokumentace datové struktury projektu Journal
+1. Úvod
+
+Projekt Journal je školní simulace redakčního systému časopisu, která běží plně v prohlížeči.
+Nepoužívá backend ani server → veškerá data jsou ukládána lokálně pomocí localStorage a sessionStorage.
+
+Cílem je umožnit testování celého workflow časopisu:
+
+Autor → Redaktor → Recenzent → Šéfredaktor → Publikace → Čtenář
+
+Aplikace je strukturována jako více HTML stránek (role-based interface), doplněné o centrální logiku v shared.js.
+
+2. Ukládání dat
+2.1 Uživatelé
+
+Uživatelé nejsou ukládáni v localStorage.
+Login je řešen staticky v souboru auth.js pomocí objektu:
+
+const users = {
+  autor: { password: "heslo", role: "autor", target: "roles/autor.html" },
+  redaktor: { password: "heslo", role: "redaktor", target: "roles/redaktor.html" },
+  recenzent: { password: "heslo", role: "recenzent", target: "roles/recenzent.html" },
+  sefredaktor: { password: "heslo", role: "sefredaktor", target: "roles/sefredaktor.html" },
+  admin: { password: "heslo", role: "admin", target: "roles/admin.html" }
+};
+
+2.2 Session uživatele
+
+Po přihlášení se uživatel uloží do sessionStorage:
+
+sessionStorage.setItem("session.user", JSON.stringify({
+    username,
+    role,
+    issuedAt: Date.now()
+}));
+
+
+Session se používá pro:
+
+ověření role,
+
+přístup do konkrétní sekce,
+
+zobrazení navigace,
+
+přesměrování.
+
+2.3 Články
+
+Hlavní datová entita.
+Ukládají se do:
+
+localStorage["journal.articles"]
+
+
+Každý článek má tuto strukturu:
+
+{
+  id: "article_123",
+  title: "Název článku",
+  abstract: "Krátký popis...",
+  author: "autor",
+  assignedEditor: "redaktor",
+  assignedReviewers: ["recenzent1"],
+  reviews: [
+    {
+      reviewer: "recenzent",
+      summary: "...",
+      strengths: "...",
+      weaknesses: "...",
+      recommendation: "accept/reject/revise",
+      submittedAt: 123456789
+    }
+  ],
+  status: "draft / queued / review / revisions / accepted / rejected / published",
+  versions: [
+    { number: 1, file: "base64data", uploadedAt: 12345 }
+  ],
+  publishedAt: null
+}
+
+2.4 Recenze
+
+Recenze nejsou samostatná entita — jsou uložené uvnitř článku v poli:
+
+article.reviews[]
+
+
+Výhody:
+
+snadné načtení při rozhodování,
+
+kompaktní struktura,
+
+jednoznačná vazba na článek.
+
+2.5 DEMO data (Seed)
+
+Stránka public/seed.html generuje testovací články pro všechny stavy pracovního procesu.
+
+Data se ukládají stejně jako ostatní články → journal.articles.
+
+Seed generuje:
+
+1× draft
+
+1× queued
+
+1× review
+
+1× revisions
+
+1× accepted
+
+1× rejected
+
+1× published
+
+Každý má generovaný ID a base64 placeholder PDF.
+
+2.6 HelpDesk
+
+Uloženo v:
+
+localStorage["journal.helpdesk"]
+
+
+Struktura:
+
+{
+  id: "ticket_001",
+  user: "autor",
+  message: "Potřebuji pomoc...",
+  responses: [
+    { from: "admin", text: "...", at: 123456 },
+    { from: "autor", text: "...", at: 123457 }
+  ],
+  createdAt: 123456,
+  status: "open / closed"
+}
+
+
+Admin může odpovědět, uživatel vidí historii komunikace.
+
+3. Datové toky mezi rolemi
+3.1 Autor
+
+Nahraje článek → uloží se jako draft.
+
+Odešle ke zpracování → queued.
+
+3.2 Redaktor
+
+Provádí základní kontrolu.
+
+Přiřazuje recenzenta.
+
+Přepíná na review.
+
+3.3 Recenzent
+
+Stahuje článek.
+
+Odevzdává posudek (přidává do reviews[]).
+
+Doporučuje další postup.
+
+3.4 Šéfredaktor
+
+Vidí všechny posudky.
+
+Provádí finální rozhodnutí:
+
+accepted
+
+rejected
+
+revisions
+
+3.5 Publikace
+
+Schválené články jsou označeny jako:
+
+status = "published"
+publishedAt = <timestamp>
+
+
+Zobrazují se v /public/cisla.html.
+
+4. Centralizovaná logika v shared.js
+Hlavní odpovědnosti:
+
+čtení a zápis článků,
+
+generování ID,
+
+fulltextové vyhledávání,
+
+filtrování a řazení,
+
+správa verzí článku,
+
+helpery sdílené mezi rolemi.
+
+Hlavní metody:
+Shared.readArticles()
+Shared.writeArticles(list)
+Shared.lastVersion(article)
+Shared.searchArticles(query)
+Shared.groupByIssue(articles)
+
+5. Struktura projektových souborů
+/index.html                   → hlavní login + landing
+/admin-login.html             → login pro admina
+
+/assets/js/auth.js            → login logika
+/assets/js/shared.js          → datová logika
+/assets/js/public.js          → veřejná část
+/assets/js/admin.js           → admin dashboard
+/assets/js/helpdesk.js        → helpdesk logika
+
+/roles/autor.html
+/roles/redaktor.html
+/roles/recenzent.html
+/roles/sefredaktor.html
+/roles/admin.html             → administrátorský panel
+
+/public/index.html            → O časopisu
+/public/cisla.html            → vydaná čísla
+/public/help.html             → nápověda
+/public/helpdesk.html         → helpdesk formulář
+/public/seed.html             → generátor demo dat
+
+6. Operace s daty
+Uložení článku
+const articles = Shared.readArticles();
+articles.push(article);
+Shared.writeArticles(articles);
+
+Aktualizace článku
+Shared.writeArticles(updatedList);
+
+Přidání recenze
+article.reviews.push(review);
+Shared.writeArticles(list);
+
+Uložení helpdesk ticketu
+data.push(ticket);
+localStorage.setItem("journal.helpdesk", JSON.stringify(data));
+
+7. Bezpečnostní poznámky
+
+Data nejsou sdílena mezi uživateli.
+
+Každý uživatel vidí jen svoje localStorage.
+
+Login není zabezpečený (školní simulace).
+
+Aplikace funguje offline.
+
+8. Shrnutí
+
+Tento projekt představuje kompletní simulaci redakčního procesu časopisu bez backendu.
+Všechna data — články, recenze, publikace i helpdesk dotazy — jsou ukládána přímo v prohlížeči v JSON formátu.
+
+Použité technologie:
+
+HTML, CSS, JS
+
+localStorage/sessionStorage
+
+modulární JS architektura
+
+role-based routing
+
+Celý projekt je strukturovaný a snadno rozšiřitelný.
