@@ -49,8 +49,12 @@
     if (!host) return; // tato stránka tu sekci nemá
 
     const all = readArticles();
-    // jen publikované
-    const pubs = all.filter(a => a.status === 'Publikováno');
+    // publikované nebo přijato (kontrola top-level i v poslední verzi)
+    const pubs = all.filter(a => {
+      const st = (a.status) || (lastVersion(a) && lastVersion(a).status) || '';
+      return st === 'Publikováno' || st === 'Přijato';
+    });
+
     // group: issue label nebo YYYY–MM
     const byIssue = {};
     pubs.forEach(a => {
